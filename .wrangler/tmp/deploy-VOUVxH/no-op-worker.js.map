@@ -1,0 +1,8 @@
+{
+  "version": 3,
+  "sources": ["../../../node_modules/.pnpm/wrangler@4.51.0_@cloudflare+workers-types@4.20251128.0/node_modules/wrangler/templates/no-op-worker.js"],
+  "sourceRoot": "D:\\\u6587\u6863\\\u5DE5\u7A0B\u6587\u4EF6\uFF08\u52FF\u52A8\uFF09\\trea\\fuwariT\\.wrangler\\tmp\\deploy-VOUVxH",
+  "sourcesContent": ["export default {\n\tfetch() {\n\t\treturn new Response(\"Not found\", {\n\t\t\tstatus: 404,\n\t\t\theaders: {\n\t\t\t\t\"Content-Type\": \"text/html\",\n\t\t\t},\n\t\t});\n\t},\n};\n"],
+  "mappings": ";AAAA,IAAO,uBAAQ;AAAA,EACd,QAAQ;AACP,WAAO,IAAI,SAAS,aAAa;AAAA,MAChC,QAAQ;AAAA,MACR,SAAS;AAAA,QACR,gBAAgB;AAAA,MACjB;AAAA,IACD,CAAC;AAAA,EACF;AACD;",
+  "names": []
+}

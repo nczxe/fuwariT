@@ -152,7 +152,7 @@ const bannerOffset =
 		
 		<!-- Umami analytics -->
 		{umamiConfig.enable && (
-			<script defer src={`${umamiConfig.baseUrl}/script.js`} data-website-id={umamiConfig.websiteId} data-swup-ignore-script></script>
+			<script is:inline defer src={`${umamiConfig.baseUrl}/script.js`} data-website-id={umamiConfig.websiteId} data-swup-ignore-script></script>
 		)}
 
 	</head>

@@ -4,6 +4,7 @@ import I18nKey from "../i18n/i18nKey";
 import { i18n } from "../i18n/translation";
 import { formatDateToYYYYMMDD } from "../utils/date-utils";
 import { getCategoryUrl, getTagUrl } from "../utils/url-utils";
+import { umamiConfig, statsConfig } from "../config";
 
 interface Props {
 	class: string;
@@ -13,6 +14,7 @@ interface Props {
 	category: string | null;
 	hideTagsForMobile?: boolean;
 	hideUpdateDate?: boolean;
+	slug?: string;
 }
 const {
 	published,
@@ -21,6 +23,7 @@ const {
 	category,
 	hideTagsForMobile = false,
 	hideUpdateDate = false,
+	slug,
 } = Astro.props;
 const className = Astro.props.class;
 ---
@@ -79,4 +82,46 @@ const className = Astro.props.class;
             {!(tags && tags.length > 0) && <div class="transition text-50 text-sm font-medium">{i18n(I18nKey.noTags)}</div>}
         </div>
     </div>
+
+    <!-- views -->
+    {slug && umamiConfig.enable && (
+        <div class="flex items-center">
+            <div class="meta-icon">
+                <Icon name="material-symbols:visibility-outline" class="text-xl"></Icon>
+            </div>
+            <span class="text-50 text-sm font-medium" id={`post-views-${slug}`}>
+                {statsConfig.loadingText}
+            </span>
+        </div>
+    )}
 </div>
+
+{slug && umamiConfig.enable && (
+    <script is:inline define:vars={{ slug }}>
+        (async () => {
+            const statsElement = document.getElementById(`post-views-${slug}`);
+            if (!statsElement) return;
+            
+            try {
+                // 使用Umami的公共API获取统计数据
+                const response = await fetch(`${umamiConfig.baseUrl}/api/websites/${umamiConfig.websiteId}/stats?path=ilike.*${encodeURIComponent(slug)}*`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Failed to fetch stats');
+                }
+                
+                const statsData = await response.json();
+                statsElement.textContent = `浏览 ${statsData.pageviews || 0} · 访客 ${statsData.visits || 0}`;
+            } catch (error) {
+                // API调用失败时，不显示错误信息，只隐藏加载状态
+                statsElement.style.display = 'none';
+            }
+        })();
+    </script>
+)

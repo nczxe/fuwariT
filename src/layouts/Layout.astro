@@ -4,7 +4,7 @@ import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 
 import ConfigCarrier from "@components/ConfigCarrier.astro";
-import { profileConfig, siteConfig } from "@/config";
+import { profileConfig, siteConfig, umamiConfig } from "@/config";
 import {
 	AUTO_MODE,
 	BANNER_HEIGHT,
@@ -146,11 +146,22 @@ const bannerOffset =
 		<slot name="head"></slot>
 
 		<link rel="alternate" type="application/rss+xml" title={profileConfig.name} href={`${Astro.site}rss.xml`}/>
+		
+		<!-- Umami share script -->
+		<script is:inline src="/js/umami-share.js" defer></script>
+		
+		<!-- Umami analytics -->
+		{umamiConfig.enable && (
+			<script defer src={`${umamiConfig.baseUrl}/script.js`} data-website-id={umamiConfig.websiteId} data-swup-ignore-script></script>
+		)}
 
 	</head>
-	<body class=" min-h-screen transition " class:list={[{"lg:is-home": isHomePage, "enable-banner": enableBanner}]}
+	<body class=" min-h-screen transition " class:list={[{"lg:is-home": isHomePage, "enable-banner": enableBanner}]},
 		  data-overlayscrollbars-initialize
 	>
+		<!-- Background image -->
+		<img id="background-image" class="fixed inset-0 z-0 object-cover opacity-10 pointer-events-none" />
+		
 		<ConfigCarrier></ConfigCarrier>
 		<slot />
 
@@ -191,6 +202,18 @@ const bannerOffset =
 	.navbar-hidden {
 		@apply opacity-0 -translate-y-16
 	}
+}
+
+/* Background image styles */
+#background-image {
+	position: fixed;
+	inset: 0;
+	z-index: -1;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	opacity: 0.3;
+	pointer-events: none;
 }
 </style>
 
@@ -501,6 +524,47 @@ window.onresize = () => {
 	offset = offset - offset % 4;
 	document.documentElement.style.setProperty('--banner-height-extend', `${offset}px`);
 }
+
+// Set random background image on page load
+window.addEventListener('DOMContentLoaded', () => {
+	// Background image URLs from user's request
+	const isMobile = window.innerWidth < 768; // 判断是否为移动端
+	
+	// 根据设备类型选择不同的图片列表
+	const backgroundUrls = isMobile ? 
+		// 移动端使用竖图
+		[
+			'https://t.alcy.cc/mp',      // 移动竖图
+			'https://t.alcy.cc/moemp',   // 萌版竖图
+			'https://t.alcy.cc/ysmp',    // 原神竖图
+			'https://t.alcy.cc/ycy',     // 二次元自适应
+			'https://t.alcy.cc/moez',    // 萌版自适应
+			'https://t.alcy.cc/ai',      // ai自适应
+			'https://t.alcy.cc/ysz'      // 原神自适应
+		] : 
+		// PC端使用横图
+		[
+			'https://t.alcy.cc/pc',      // PC横图
+			'https://t.alcy.cc/ys',      // 原神横图
+			'https://t.alcy.cc/fj',      // 风景横图
+			'https://t.alcy.cc/ycy',     // 二次元自适应
+			'https://t.alcy.cc/moez',    // 萌版自适应
+			'https://t.alcy.cc/ai',      // ai自适应
+			'https://t.alcy.cc/ysz'      // 原神自适应
+		];
+	
+	// Randomly select one URL
+	const randomIndex = Math.floor(Math.random() * backgroundUrls.length);
+	const randomUrl = backgroundUrls[randomIndex];
+	
+	// Set the background image
+	const backgroundImage = document.getElementById('background-image') as HTMLImageElement;
+	if (backgroundImage) {
+		backgroundImage.src = randomUrl;
+		// 直接设置不透明度为90%
+		backgroundImage.style.opacity = '0.75';
+	}
+});
 
 </script>
 

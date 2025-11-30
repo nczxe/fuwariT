@@ -97,21 +97,14 @@ const className = Astro.props.class;
 </div>
 
 {slug && umamiConfig.enable && (
-    <script is:inline define:vars={{ slug, umamiConfig }}>
+    <script is:inline define:vars={{ slug }}>
         (async () => {
             const statsElement = document.getElementById(`post-views-${slug}`);
             if (!statsElement) return;
             
-            // 直接硬编码 umamiConfig 的值，避免 Swup 动态加载时出现 ReferenceError
-            const umamiConfig = {
-                baseUrl: "" + umamiConfig.baseUrl + "",
-                shareId: "" + umamiConfig.shareId + "",
-                timezone: "" + umamiConfig.timezone + ""
-            };
-            
             try {
-                // 使用Umami的共享API获取统计数据
-                const response = await fetch(`${umamiConfig.baseUrl}/api/share/${umamiConfig.shareId}/stats?path=ilike.*${encodeURIComponent(slug)}*&timezone=${umamiConfig.timezone}`, {
+                // 使用全局的 window.umamiConfig，避免 Swup 动态加载时出现 ReferenceError
+                const response = await fetch(`${window.umamiConfig.baseUrl}/api/share/${window.umamiConfig.shareId}/stats?path=ilike.*${encodeURIComponent(slug)}*&timezone=${window.umamiConfig.timezone}`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',

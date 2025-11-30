@@ -32,21 +32,14 @@ const config = profileConfig;
             </div>
         )}
         
-        <script is:inline define:vars={{ umamiConfig }}>
+        <script is:inline>
             (async () => {
                 const statsElement = document.getElementById('profile-stats');
                 if (!statsElement) return;
                 
-                // 直接硬编码 umamiConfig 的值，避免 Swup 动态加载时出现 ReferenceError
-                const umamiConfig = {
-                    baseUrl: "" + umamiConfig.baseUrl + "",
-                    shareId: "" + umamiConfig.shareId + "",
-                    timezone: "" + umamiConfig.timezone + ""
-                };
-                
                 try {
-                // 使用Umami的共享API获取统计数据
-                const response = await fetch(`${umamiConfig.baseUrl}/api/share/${umamiConfig.shareId}/stats?timezone=${umamiConfig.timezone}`, {
+                // 使用全局的 window.umamiConfig，避免 Swup 动态加载时出现 ReferenceError
+                const response = await fetch(`${window.umamiConfig.baseUrl}/api/share/${window.umamiConfig.shareId}/stats?timezone=${window.umamiConfig.timezone}`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
@@ -62,7 +55,7 @@ const config = profileConfig;
                 statsElement.textContent = `浏览 ${statsData.pageviews || 0} · 访客 ${statsData.visits || 0}`;
             } catch (error) {
                 console.error('Umami stats error:', error);
-                statsElement.innerHTML = `<a href="${umamiConfig.baseUrl}/share/${umamiConfig.shareId}" target="_blank" class="text-[var(--primary)] hover:underline">查看站点统计</a>`;
+                statsElement.innerHTML = `<a href="${window.umamiConfig.baseUrl}/share/${window.umamiConfig.shareId}" target="_blank" class="text-[var(--primary)] hover:underline">查看站点统计</a>`;
             }
             })();
         </script>

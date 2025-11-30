@@ -150,6 +150,18 @@ const bannerOffset =
 		<!-- Umami share script -->
 		<script is:inline src="/js/umami-share.js" defer></script>
 		
+		<!-- 全局存储 umamiConfig，供动态加载的脚本使用 -->
+		{umamiConfig.enable && (
+			<script is:inline>
+				// 将 umamiConfig 存储在全局作用域中，避免 Swup 动态加载时出现 ReferenceError
+				window.umamiConfig = {
+					baseUrl: "" + umamiConfig.baseUrl + "",
+					shareId: "" + umamiConfig.shareId + "",
+					timezone: "" + umamiConfig.timezone + ""
+				};
+			</script>
+		)}
+		
 		<!-- Umami analytics -->
 		{umamiConfig.enable && (
 			<script is:inline defer src={`${umamiConfig.baseUrl}/script.js`} data-website-id={umamiConfig.websiteId} data-swup-ignore-script></script>

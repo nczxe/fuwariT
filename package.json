@@ -13,7 +13,8 @@
     "new-post": "node scripts/new-post.js",
     "format": "biome format --write ./src",
     "lint": "biome check --write ./src",
-    "preinstall": "npx only-allow pnpm"
+    "preinstall": "npx only-allow pnpm",
+    "deploy": "wrangler deploy"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.4",
@@ -63,6 +64,7 @@
     "unist-util-visit": "^5.0.0"
   },
   "devDependencies": {
+    "@astrojs/cloudflare": "^12.6.12",
     "@astrojs/ts-plugin": "^1.10.4",
     "@biomejs/biome": "2.2.5",
     "@rollup/plugin-yaml": "^4.1.2",

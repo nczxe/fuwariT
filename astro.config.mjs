@@ -30,7 +30,9 @@ export default defineConfig({
 	site: "https://fuwari.vercel.app/",
 	base: "/",
 	trailingSlash: "always",
-	adapter: cloudflare(),
+	adapter: cloudflare({
+		mode: "directory",
+	}),
 	integrations: [
 		tailwind({
 			nesting: true,

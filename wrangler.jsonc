@@ -1,6 +1,8 @@
 {
 	"name": "nblog",
 	"compatibility_date": "2025-11-30",
-	"main": "./dist/_worker.js/index.js",
+	"assets": {
+		"directory": "./dist"
+	},
 	"send_metrics": false
 }

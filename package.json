@@ -6,7 +6,7 @@
 		"dev": "astro dev",
 		"start": "astro dev",
 		"check": "astro check",
-		"build": "astro build",
+		"build": "astro build && copy .assetsignore dist\.assetsignore",
 		"preview": "astro preview",
 		"astro": "astro",
 		"type-check": "tsc --noEmit --isolatedDeclarations",

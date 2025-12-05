@@ -147,20 +147,19 @@ const bannerOffset =
 
 		<link rel="alternate" type="application/rss+xml" title={profileConfig.name} href={`${Astro.site}rss.xml`}/>
 		
-		<!-- Umami share script -->
-		<script is:inline src="/js/umami-share.js" defer></script>
-		
 		<!-- 全局存储 umamiConfig，供动态加载的脚本使用 -->
-		{umamiConfig.enable && (
-			<script is:inline>
-				// 将 umamiConfig 存储在全局作用域中，避免 Swup 动态加载时出现 ReferenceError
-				window.umamiConfig = {
-					baseUrl: "" + umamiConfig.baseUrl + "",
-					shareId: "" + umamiConfig.shareId + "",
-					timezone: "" + umamiConfig.timezone + ""
-				};
-			</script>
-		)}
+		<script is:inline define:vars={{ umamiConfig }}>
+			// 首先定义 umamiConfig，确保在任何依赖它的脚本之前可用
+			window.umamiConfig = {
+				baseUrl: umamiConfig.baseUrl,
+				shareId: umamiConfig.shareId,
+				timezone: umamiConfig.timezone,
+				enable: umamiConfig.enable
+			};
+		</script>
+		
+		<!-- Umami share script - 移除 defer，确保在文档解析阶段同步加载 -->
+		<script is:inline src="/js/umami-share.js"></script>
 		
 		<!-- Umami analytics -->
 		{umamiConfig.enable && (
@@ -173,6 +172,55 @@ const bannerOffset =
 	>
 		<!-- Background image -->
 		<img id="background-image" class="fixed inset-0 z-0 object-cover opacity-10 pointer-events-none" />
+		
+		<!-- Background control buttons wrapper -->
+		<div class="fixed bottom-4 right-4 z-50 flex flex-col items-end gap-3">
+			<!-- Refresh background button -->
+			<button id="random-background-btn" 
+				class="bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-full p-3 text-white transition-all duration-300 shadow-lg hover:scale-110 active:scale-95 flex items-center gap-2"
+				aria-label="Refresh background image"
+			>
+				<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+					<path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" />
+					<path d="M21 3v5h-5" />
+					<path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" />
+					<path d="M3 21v-5h5" />
+				</svg>
+				<span class="text-sm">刷新背景</span>
+			</button>
+			
+			<!-- Random visit background page button -->
+			<button id="random-visit-btn" 
+				class="bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-full p-3 text-white transition-all duration-300 shadow-lg hover:scale-110 active:scale-95 flex items-center gap-2"
+				aria-label="Random visit background page"
+			>
+				<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+					<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+					<path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+					<line x1="12" x2="12" y1="18" y2="6" />
+					<line x1="18" x2="6" y1="12" y2="12" />
+				</svg>
+				<span class="text-sm">随机访问背景页</span>
+			</button>
+			
+			<!-- Background image URL display (hover to show) -->
+			<div id="background-image-url" class="bg-white/10 backdrop-blur-sm rounded-lg p-3 text-white text-xs max-w-xs break-all shadow-lg opacity-0 transition-opacity duration-300 hover:opacity-100 cursor-pointer group relative">
+				<span class="block mb-1 font-medium">Background Image URL:</span>
+				<span id="bg-url-value" class="block group-hover:underline">Loading...</span>
+				<div class="absolute -bottom-1 left-0 right-0 h-0.5 bg-white/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+			</div>
+		</div>
+		
+		<!-- Copy success notification -->
+		<div id="copy-notification" class="fixed top-[20%] right-[-300px] z-50 bg-white/20 backdrop-blur-md rounded-l-lg p-4 text-white shadow-lg transition-all duration-300 ease-in-out">
+			<div class="flex items-center gap-2">
+				<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+					<path d="M20 6 9 17l-5-5" />
+				</svg>
+				<span>链接已复制</span>
+			</div>
+			<div id="notification-timer" class="absolute bottom-0 left-0 h-1 bg-white transition-all duration-3000 ease-out"></div>
+		</div>
 		
 		<ConfigCarrier></ConfigCarrier>
 		<slot />
@@ -537,46 +585,158 @@ window.onresize = () => {
 	document.documentElement.style.setProperty('--banner-height-extend', `${offset}px`);
 }
 
-// Set random background image on page load
-window.addEventListener('DOMContentLoaded', () => {
-	// Background image URLs from user's request
-	const isMobile = window.innerWidth < 768; // 判断是否为移动端
-	
-	// 根据设备类型选择不同的图片列表
-	const backgroundUrls = isMobile ? 
-		// 移动端使用竖图
-		[
-			'https://t.alcy.cc/mp',      // 移动竖图
-			'https://t.alcy.cc/moemp',   // 萌版竖图
-			'https://t.alcy.cc/ysmp',    // 原神竖图
-			'https://t.alcy.cc/ycy',     // 二次元自适应
-			'https://t.alcy.cc/moez',    // 萌版自适应
-			'https://t.alcy.cc/ai',      // ai自适应
-			'https://t.alcy.cc/ysz'      // 原神自适应
-		] : 
-		// PC端使用横图
-		[
-			'https://t.alcy.cc/pc',      // PC横图
-			'https://t.alcy.cc/ys',      // 原神横图
-			'https://t.alcy.cc/fj',      // 风景横图
-			'https://t.alcy.cc/ycy',     // 二次元自适应
-			'https://t.alcy.cc/moez',    // 萌版自适应
-			'https://t.alcy.cc/ai',      // ai自适应
-			'https://t.alcy.cc/ysz'      // 原神自适应
-		];
-	
-	// Randomly select one URL
-	const randomIndex = Math.floor(Math.random() * backgroundUrls.length);
-	const randomUrl = backgroundUrls[randomIndex];
-	
-	// Set the background image
-	const backgroundImage = document.getElementById('background-image') as HTMLImageElement;
-	if (backgroundImage) {
-		backgroundImage.src = randomUrl;
-		// 直接设置不透明度为90%
-		backgroundImage.style.opacity = '0.75';
-	}
-});
+// 定义背景图片URL列表和获取实际URL的函数
+		const getBackgroundUrls = () => {
+			const isMobile = window.innerWidth < 768; // 判断是否为移动端
+			
+			// 根据设备类型选择不同的图片列表
+			return isMobile ? 
+				// 移动端使用竖图
+				[
+					'https://t.alcy.cc/mp',      // 移动竖图
+					'https://t.alcy.cc/moemp',   // 萌版竖图
+					'https://t.alcy.cc/ysmp',    // 原神竖图
+					'https://t.alcy.cc/ycy',     // 二次元自适应
+					'https://t.alcy.cc/moez',    // 萌版自适应
+					'https://t.alcy.cc/ai',      // ai自适应
+					'https://t.alcy.cc/ysz'      // 原神自适应
+				] : 
+				// PC端使用横图
+				[
+					'https://t.alcy.cc/pc',      // PC横图
+					'https://t.alcy.cc/ys',      // 原神横图
+					'https://t.alcy.cc/fj',      // 风景横图
+					'https://t.alcy.cc/ycy',     // 二次元自适应
+					'https://t.alcy.cc/moez',    // 萌版自适应
+					'https://t.alcy.cc/ai',      // ai自适应
+					'https://t.alcy.cc/ysz'      // 原神自适应
+				];
+		};
+		
+		// 获取实际的重定向URL
+		const getActualImageUrl = async (shortUrl: string): Promise<string> => {
+			try {
+				const response = await fetch(shortUrl, {
+					method: 'HEAD',
+					redirect: 'follow',
+					mode: 'cors'
+				});
+				return response.url;
+			} catch (error) {
+				console.error('Error getting actual image URL:', error);
+				// 如果获取失败，使用原始URL
+				return shortUrl;
+			}
+		};
+		
+		// 设置背景图片
+		const setBackgroundImage = async () => {
+			const backgroundUrls = getBackgroundUrls();
+			const randomIndex = Math.floor(Math.random() * backgroundUrls.length);
+			const randomUrl = backgroundUrls[randomIndex];
+			
+			// 获取实际的重定向URL
+			const actualImageUrl = await getActualImageUrl(randomUrl);
+			console.log('Actual image URL:', actualImageUrl);
+			
+			// Set the background image
+			const backgroundImage = document.getElementById('background-image') as HTMLImageElement;
+			if (backgroundImage) {
+				backgroundImage.src = randomUrl;
+				// 存储实际的图片URL到元素的dataset中
+				backgroundImage.dataset.actualUrl = actualImageUrl;
+				// 直接设置不透明度为90%
+				backgroundImage.style.opacity = '0.75';
+				
+				// 更新显示的背景图片URL
+				const bgUrlValue = document.getElementById('bg-url-value');
+				if (bgUrlValue) {
+					bgUrlValue.textContent = actualImageUrl;
+				}
+			}
+		};
+		
+		// 显示复制成功提示
+		const showCopyNotification = () => {
+			const notification = document.getElementById('copy-notification');
+			const timerBar = document.getElementById('notification-timer');
+			if (!notification || !timerBar) return;
+			
+			// 重置计时器宽度
+			timerBar.style.width = '100%';
+			
+			// 显示通知
+			notification.style.right = '0';
+			
+			// 3秒后隐藏通知
+			setTimeout(() => {
+				notification.style.right = '-300px';
+			}, 3000);
+		};
+		
+		// Set random background image on page load
+		window.addEventListener('DOMContentLoaded', async () => {
+			await setBackgroundImage();
+			
+			// 刷新背景按钮事件
+				const randomBackgroundBtn = document.getElementById('random-background-btn');
+				if (randomBackgroundBtn) {
+					randomBackgroundBtn.addEventListener('click', async () => {
+						// 显示加载提示
+						randomBackgroundBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg><span class="text-sm">刷新中...</span>';
+						randomBackgroundBtn.disabled = true;
+						
+						try {
+							await setBackgroundImage();
+						} catch (error) {
+							console.error('Error setting background image:', error);
+							alert('设置背景图片失败，请稍后重试');
+						} finally {
+							// 恢复按钮状态
+							randomBackgroundBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" /><path d="M21 3v5h-5" /><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" /><path d="M3 21v-5h5" /></svg><span class="text-sm">刷新背景</span>';
+							randomBackgroundBtn.disabled = false;
+						}
+					});
+					}
+				
+				// 随机访问背景页按钮事件
+				const randomVisitBtn = document.getElementById('random-visit-btn');
+				if (randomVisitBtn) {
+					randomVisitBtn.addEventListener('click', () => {
+						// 获取对应设备的背景链接列表
+						const backgroundUrls = getBackgroundUrls();
+						// 随机选择一个链接
+						const randomIndex = Math.floor(Math.random() * backgroundUrls.length);
+						const randomUrl = backgroundUrls[randomIndex];
+						
+						// 在新标签页中打开链接
+						window.open(randomUrl, '_blank');
+					});
+				}
+				
+				// 复制背景图片URL事件
+				const backgroundImageUrl = document.getElementById('background-image-url');
+				if (backgroundImageUrl) {
+					backgroundImageUrl.addEventListener('click', async () => {
+						const backgroundImage = document.getElementById('background-image');
+						if (!backgroundImage || !backgroundImage.dataset.actualUrl) {
+							console.error('Background image URL not found');
+							return;
+						}
+						
+						try {
+							// 复制URL到剪贴板
+							await navigator.clipboard.writeText(backgroundImage.dataset.actualUrl);
+							
+							// 显示复制成功提示
+							showCopyNotification();
+						} catch (error) {
+							console.error('Error copying URL:', error);
+							alert('复制链接失败，请稍后重试');
+						}
+					});
+				}
+			});
 
 </script>
 

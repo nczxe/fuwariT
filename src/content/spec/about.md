@@ -5,11 +5,14 @@
 本网站是一个基于Fuwari框架构建的静态网站，开源于GitHub。采用 [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) 许可
 
 ## 项目仓库
-
+:::tip
+如果可以...就请给原仓库和本仓库点个Star吧！
+:::
 *感谢所有上游仓库的贡献者们*
 
 ::github{repo="nczxe/fuwariT"}
-
+原仓库
+::github{repo="saicaca/fuwari"}
 ## 网站性质
 
 本网站是一个静态网站，这意味着：

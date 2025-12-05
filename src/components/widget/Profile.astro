@@ -38,25 +38,31 @@ const config = profileConfig;
                 if (!statsElement) return;
                 
                 try {
-                // 使用全局的 window.umamiConfig，避免 Swup 动态加载时出现 ReferenceError
-                const response = await fetch(`${window.umamiConfig.baseUrl}/api/share/${window.umamiConfig.shareId}/stats?timezone=${window.umamiConfig.timezone}`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
+                    // 使用全局的 window.umamiConfig，避免 Swup 动态加载时出现 ReferenceError
+                    // 首先获取分享数据，包含必要的 token
+                    const shareData = await window.getUmamiShareData(window.umamiConfig.baseUrl, window.umamiConfig.shareId);
+                    
+                    // 使用正确的 API 路径和认证信息
+                    const response = await fetch(`${window.umamiConfig.baseUrl}/api/share/${window.umamiConfig.shareId}/stats?timezone=${window.umamiConfig.timezone}`, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                            'Authorization': `Bearer ${shareData.token}`
+                        }
+                    });
+                    
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
                     }
-                });
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}, message: ${await response.text()}`);
+                    
+                    const statsData = await response.json();
+                    statsElement.textContent = `浏览 ${statsData.pageviews || 0} · 访客 ${statsData.visits || 0}`;
+                } catch (error) {
+                    console.error('Umami stats error:', error);
+                    statsElement.innerHTML = `<a href="${window.umamiConfig.baseUrl}/share/${window.umamiConfig.shareId}" target="_blank" class="text-[var(--primary)] hover:underline">查看站点统计</a>`;
                 }
-                
-                const statsData = await response.json();
-                statsElement.textContent = `浏览 ${statsData.pageviews || 0} · 访客 ${statsData.visits || 0}`;
-            } catch (error) {
-                console.error('Umami stats error:', error);
-                statsElement.innerHTML = `<a href="${window.umamiConfig.baseUrl}/share/${window.umamiConfig.shareId}" target="_blank" class="text-[var(--primary)] hover:underline">查看站点统计</a>`;
-            }
             })();
         </script>
         

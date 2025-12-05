@@ -104,7 +104,11 @@ const className = Astro.props.class;
             
             try {
                 // 使用全局的 window.umamiConfig，避免 Swup 动态加载时出现 ReferenceError
-                const response = await fetch(`${window.umamiConfig.baseUrl}/api/share/${window.umamiConfig.shareId}/stats?path=ilike.*${encodeURIComponent(slug)}*&timezone=${window.umamiConfig.timezone}`, {
+                // 使用 umami-share.js 提供的 getUmamiShareData 函数获取分享数据
+                const shareData = await window.getUmamiShareData(window.umamiConfig.baseUrl, window.umamiConfig.shareId);
+                
+                // 使用正确的 API 路径格式
+                const response = await fetch(`${window.umamiConfig.baseUrl}/analytics/us/share/${window.umamiConfig.shareId}?path=ilike.*${encodeURIComponent(slug)}*&timezone=${window.umamiConfig.timezone}`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
@@ -113,7 +117,8 @@ const className = Astro.props.class;
                 });
                 
                 if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}, message: ${await response.text()}`);
+                    const errorText = await response.text();
+                    throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
                 }
                 
                 const statsData = await response.json();

@@ -31,7 +31,9 @@ export default defineConfig({
 	base: "/",
 	trailingSlash: "always",
 	output: "server",
-	adapter: cloudflare(),
+	adapter: cloudflare({
+		mode: "pages",
+	}),
 	integrations: [
 		tailwind({
 			nesting: true,

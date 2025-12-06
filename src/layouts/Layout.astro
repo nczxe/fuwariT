@@ -190,18 +190,18 @@ const bannerOffset =
 			</button>
 			
 			<!-- Random visit background page button -->
-			<button id="random-visit-btn" 
-				class="bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-full p-3 text-white transition-all duration-300 shadow-lg hover:scale-110 active:scale-95 flex items-center gap-2"
-				aria-label="Random visit background page"
-			>
-				<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-					<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
-					<path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
-					<line x1="12" x2="12" y1="18" y2="6" />
-					<line x1="18" x2="6" y1="12" y2="12" />
-				</svg>
-				<span class="text-sm">随机访问背景页</span>
-			</button>
+				<button id="random-visit-btn" 
+					class="bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-full p-3 text-white transition-all duration-300 shadow-lg hover:scale-110 active:scale-95 flex items-center gap-2"
+					aria-label="Random visit background page"
+				>
+					<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+						<circle cx="12" cy="12" r="10" />
+						<path d="M12 6v6l4 2" />
+						<path d="M17 17l1.41-1.41" />
+						<path d="M19.24 15.24c-2.21-2.21-3.32-3.32-4.24-4.24" />
+					</svg>
+					<span class="text-sm">随机访问背景页</span>
+				</button>
 			
 			<!-- Background image URL display (hover to show) -->
 			<div id="background-image-url" class="bg-white/10 backdrop-blur-sm rounded-lg p-3 text-white text-xs max-w-xs break-all shadow-lg opacity-0 transition-opacity duration-300 hover:opacity-100 cursor-pointer group relative">
@@ -679,7 +679,7 @@ window.onresize = () => {
 			await setBackgroundImage();
 			
 			// 刷新背景按钮事件
-				const randomBackgroundBtn = document.getElementById('random-background-btn');
+				const randomBackgroundBtn = document.getElementById('random-background-btn') as HTMLButtonElement | null;
 				if (randomBackgroundBtn) {
 					randomBackgroundBtn.addEventListener('click', async () => {
 						// 显示加载提示

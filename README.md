@@ -6,7 +6,7 @@
 
 一个使用 [Astro](https://astro.build) 构建的静态博客模板。
 
-[**🖥️ 在线预览（Vercel）**]([https://fuwari.vercel.app/])
+[**🖥️ 在线预览（Vercel）**](https://fuwari.vercel.app/)
 
 ![预览图片](https://raw.githubusercontent.com/saicaca/resource/main/fuwari/home.png)
 

@@ -49,9 +49,16 @@
 **Cloudflare Workers**：
 - 可能收集的信息：IP地址、访问时间、访问页面、referrer（来源页面）
 - 用途：提供静态网站托管、内容分发网络（CDN）服务、HTTPS 证书管理
-- 隐私政策：[Cloudflare 隐私政策](https://www.cloudflare.com/privacypolicy/)
 
 #### 分析和统计服务
+
+**Google ads conversion tracking**：
+- 可能收集的信息：IP地址、访问时间、访问页面、referrer（来源页面）
+- 用途：广告效果跟踪和分析
+
+**Google Analytics**：
+- 可能收集的信息：IP地址、访问时间、访问页面、referrer（来源页面）
+- 用途：网站流量统计和分析
 
 **Umami 分析**
 - 可能收集的信息：页面浏览量、访问来源、设备类型（匿名化处理）

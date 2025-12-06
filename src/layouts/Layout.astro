@@ -78,6 +78,18 @@ const bannerOffset =
 >
 	<head>
 
+		<!-- Google tag (gtag.js) -->
+		<script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-P698P6QFM4"></script>
+		<script is:inline>
+			window.dataLayer = window.dataLayer || [];
+			function gtag() {
+				window.dataLayer.push(arguments);
+			}
+			gtag('js', new Date());
+
+			gtag('config', 'G-P698P6QFM4');
+		</script>
+
 		<title>{pageTitle}</title>
 
 		<meta charset="UTF-8" />

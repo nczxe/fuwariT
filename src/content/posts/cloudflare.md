@@ -8,9 +8,13 @@ draft: false
 ---
 
 <RegionRedirect />
+:::warning
+本文讨论的所有技术内容仅用于学习和研究目的，请确保在您的地区合法合规使用相关技术。
+:::
 
-> 本文讨论的所有技术内容仅用于学习和研究目的，请确保在您的地区合法合规使用相关技术。
-> 部分内容
+:::important
+部分内容由AI生成，请注意甄别真实性
+:::
 
 # 深入解析 Cloudflare WARP+：不仅是加密，更是加速
 
@@ -69,10 +73,14 @@ WARP+ 是 Cloudflare 1.1.1.1 应用中的高级网络加速服务，基于 WireG
 - **多跳链路设计**：将 WARP+ 作为第一跳，后续接入 Hysteria2 或 VLESS 实现更复杂的链路优化。
 
 ---
+## 解锁WARP+新协议
+
+::github{repo="nczxe/clou"}
 
 ## 🧾 总结
 
-Cloudflare WARP+ 不只是一个 VPN，它是一个融合了加密、加速、智能路由的现代网络优化工具。对于追求极简美学与高效连接的技术用户来说，它是提升移动体验和隐私保护的利器。
+Cloudflare WARP+ 不只是一个梯子，它是一个融合了加密、加速、智能路由的现代网络优化工具。对于追求极简美学与高效连接的技术用户来说，它是提升移动体验和隐私保护的利器。
+
 将军：WARP+ 安卓一定要能连得上（doge）
 
 ## 📥 快速入门链接
@@ -80,4 +88,6 @@ Cloudflare WARP+ 不只是一个 VPN，它是一个融合了加密、加速、�
 - [下载 Windows 客户端](https://1111-releases.cloudflareclient.com/win/latest)
 - [访问 Cloudflare WARP+ 官网](https://one.one.one.one/)
 
-> 注意：本文仅供技术交流，使用时请遵守相关服务条款和法律法规。
+:::warning
+注意：本文仅供技术交流，使用时请遵守相关服务条款和法律法规。
+:::

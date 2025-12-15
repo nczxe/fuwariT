@@ -1,5 +1,5 @@
 ---
-title: Xget
+title: Xget：中国开发者必备的开源资源加速神器
 description: "本文介绍了一个用cloudflare部署的高质量库：Xget"
 published: 2025-09-27
 image: "../assets/images/xxget.png"
@@ -8,7 +8,7 @@ category: 工具
 draft: false
 ---
 # Xget
-##### Xget：开发者的开源资源加速神器🚀
+##### Xget：中国开发者必备的的开源资源加速神器🚀
 
 在全球化的开发环境中，访问 GitHub、npm、PyPI 等海外开源资源已成为日常。然而，对于中国大陆的开发者来说，网络瓶颈、访问失败、下载缓慢等问题却屡见不鲜。**Xget**正是为了解决这一痛点而生。
 

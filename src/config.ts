@@ -86,32 +86,27 @@ export const expressiveCodeConfig: ExpressiveCodeConfig = {
 	theme: "github-dark",
 };
 
-/**
- * Umami 分析配置
- * 详细配置指南：
- * 1. 注册或登录 Umami 账户：https://umami.is/
- * 2. 创建网站：在 Umami 仪表板中，点击 "Add Website" 添加你的网站
- * 3. 获取 websiteId：创建网站后，在网站设置中可以找到 websiteId
- * 4. 获取 shareId：在网站的 "Share" 选项卡中，创建或复制分享链接，其中包含 shareId
- * 5. 配置 baseUrl：
- *    - 如果你使用的是 Umami Cloud，baseUrl 为 "https://cloud.umami.is"
- *    - 如果你使用的是自托管 Umami，baseUrl 为你的 Umami 实例地址
- * 6. 配置 timezone：设置为你的网站主要受众所在的时区，例如 "Asia/Shanghai"
- */
-export const umamiConfig = {
-	enable: true, // 是否启用 Umami 分析
-	baseUrl: "https://cloud.umami.is", // Umami 实例基础 URL
-	websiteId: "f4f63c1e-4732-48c8-a838-b5f457a6af36", // 网站 ID
-	shareId: "09xZoCGoHp4yD1yk", // 分享统计 ID
-	timezone: "Asia/Shanghai", // 时区设置
-};
 
-export const statsConfig = {
-	viewsText: "浏览",
-	visitsText: "访客",
-	loadingText: "统计加载中...",
-	unavailableText:
-		"统计不可用。请检查是否屏蔽了Umami域名，如AdGuard和AdBlock等插件",
-	getStatsText: (pageViews: number, visits: number) =>
-		`${statsConfig.viewsText} ${pageViews} · ${statsConfig.visitsText} ${visits}`,
+
+/**
+ * 源切换配置
+ * 用于在不同的部署源之间切换
+ */
+export const sourcesConfig = {
+	enable: true, // 是否启用源切换功能
+	defaultSource: "default", // 默认源的键名
+	sources: {
+		default: {
+			name: "默认源",
+			url: "https://blog.tncrr.us.kg",
+		},
+		vercel: {
+			name: "Vercel",
+			url: "https://vercelblog.tncrr.us.kg/",
+		},
+		edgeone: {
+			name: "EdgeOne",
+			url: "https://edgeoneglobal.tncrr.us.kg/",
+		},
+	},
 };

@@ -1,6 +1,6 @@
 ---
 import { Icon } from "astro-icon/components";
-import { statsConfig, umamiConfig } from "../config";
+import { statsConfig } from "../config";
 import I18nKey from "../i18n/i18nKey";
 import { i18n } from "../i18n/translation";
 import { formatDateToYYYYMMDD } from "../utils/date-utils";
@@ -83,51 +83,4 @@ const className = Astro.props.class;
         </div>
     </div>
 
-    <!-- views -->
-    {slug && umamiConfig.enable && (
-        <div class="flex items-center">
-            <div class="meta-icon">
-                <Icon name="material-symbols:visibility-outline" class="text-xl"></Icon>
-            </div>
-            <span class="text-50 text-sm font-medium" id={`post-views-${slug}`}>
-                {statsConfig.loadingText}
-            </span>
-        </div>
-    )}
 </div>
-
-{slug && umamiConfig.enable && (
-    <script is:inline define:vars={{ slug }}>
-        (async () => {
-            const statsElement = document.getElementById(`post-views-${slug}`);
-            if (!statsElement) return;
-            
-            try {
-                // 使用全局的 window.umamiConfig，避免 Swup 动态加载时出现 ReferenceError
-                // 使用 umami-share.js 提供的 getUmamiShareData 函数获取分享数据
-                const shareData = await window.getUmamiShareData(window.umamiConfig.baseUrl, window.umamiConfig.shareId);
-                
-                // 使用正确的 API 路径格式
-                const response = await fetch(`${window.umamiConfig.baseUrl}/analytics/us/share/${window.umamiConfig.shareId}?path=ilike.*${encodeURIComponent(slug)}*&timezone=${window.umamiConfig.timezone}`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    }
-                });
-                
-                if (!response.ok) {
-                    const errorText = await response.text();
-                    throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
-                }
-                
-                const statsData = await response.json();
-                statsElement.textContent = `浏览 ${statsData.pageviews || 0} · 访客 ${statsData.visits || 0}`;
-            } catch (error) {
-                // 显示更友好的错误信息
-                console.error('Umami stats error:', error);
-                statsElement.textContent = '统计不可用';
-            }
-        })();
-    </script>
-)

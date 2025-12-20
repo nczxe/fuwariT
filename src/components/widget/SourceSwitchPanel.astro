@@ -1,0 +1,123 @@
+---
+import { sourcesConfig } from "../../config";
+---
+
+{sourcesConfig.enable && (
+  <div class="card-base p-3 mt-2">
+    <div class="font-bold text-lg mb-2 dark:text-neutral-50 transition">切换源</div>
+    <div class="flex flex-col gap-2" id="source-switch-panel">
+      {Object.entries(sourcesConfig.sources).map(([key, source]) => {
+        // 获取当前路径和查询参数
+        const currentPath = Astro.url.pathname;
+        const currentSearch = Astro.url.search;
+        
+        // 构建新的 URL
+        const newUrl = new URL(currentPath + currentSearch, source.url);
+        
+        return (
+          <a
+            href={newUrl.toString()}
+            target="_self"
+            class={`block px-3 py-2 rounded-lg transition hover:bg-[var(--hover-bg)] ${key === sourcesConfig.defaultSource ? 'bg-[var(--primary)]/10 text-[var(--primary)] font-medium' : 'text-[var(--text-main)]'}`}
+            data-source-key={key}
+            data-source-url={source.url}
+          >
+            <div class="flex items-center justify-between">
+              <span>{source.name}</span>
+              <span class="source-latency" data-source-key={key}>
+                <span class="loading-indicator">⟳</span>
+              </span>
+            </div>
+          </a>
+        );
+      })}
+    </div>
+    
+    <script is:inline>
+      // 测速函数 - 使用 Image 对象测试，对 CORS 限制较少
+      function measureLatency(url) {
+        return new Promise((resolve) => {
+          const img = new Image();
+          const start = performance.now();
+          
+          img.onload = () => {
+            const end = performance.now();
+            resolve(Math.round(end - start));
+          };
+          
+          img.onerror = () => {
+            // 图片加载失败也能说明服务器可访问，只是图片不存在
+            const end = performance.now();
+            resolve(Math.round(end - start));
+          };
+          
+          img.onabort = () => {
+            resolve(null);
+          };
+          
+          // 使用 1x1 透明像素的 Data URL，避免跨域问题
+          img.src = `${url}/?t=${Date.now()}`;
+          
+          // 设置超时
+          setTimeout(() => {
+            resolve(null);
+          }, 5000);
+        });
+      }
+      
+      // 获取延迟显示的颜色
+      function getLatencyColor(latency) {
+        if (latency === null) {
+          return 'text-black dark:text-gray-400'; // 无法访问
+        } else if (latency > 1500) {
+          return 'text-red-500'; // 红色
+        } else if (latency > 1000) {
+          return 'text-yellow-500'; // 黄色
+        } else {
+          return 'text-green-500'; // 绿色
+        }
+      }
+      
+      // 初始化测速
+      async function initLatencyMeasurements() {
+        const sources = document.querySelectorAll('[data-source-key]');
+        
+        for (const source of sources) {
+          const key = source.dataset.sourceKey;
+          const url = source.dataset.sourceUrl;
+          const latencyElement = document.querySelector(`.source-latency[data-source-key="${key}"]`);
+          
+          if (latencyElement) {
+            const latency = await measureLatency(url);
+            
+            if (latency === null) {
+              latencyElement.innerHTML = '<span class="text-black dark:text-gray-400">无法访问</span>';
+            } else {
+              const colorClass = getLatencyColor(latency);
+              latencyElement.innerHTML = `<span class="${colorClass}">${latency}ms</span>`;
+            }
+          }
+        }
+      }
+      
+      // 页面加载完成后开始测速
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initLatencyMeasurements);
+      } else {
+        initLatencyMeasurements();
+      }
+    </script>
+    
+    <style>
+      .loading-indicator {
+        animation: spin 1s linear infinite;
+        color: var(--text-secondary);
+      }
+      
+      @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+      }
+    </style>
+  </div>
+)}

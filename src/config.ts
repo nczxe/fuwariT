@@ -86,8 +86,6 @@ export const expressiveCodeConfig: ExpressiveCodeConfig = {
 	theme: "github-dark",
 };
 
-
-
 /**
  * 源切换配置
  * 用于在不同的部署源之间切换
@@ -97,15 +95,15 @@ export const sourcesConfig = {
 	defaultSource: "default", // 默认源的键名
 	sources: {
 		default: {
-			name: "默认源",
+			name: "默认源(Cloudflare全球)",
 			url: "https://blog.tncrr.us.kg",
 		},
 		vercel: {
-			name: "Vercel",
-			url: "https://vercelblog.tncrr.us.kg/",
+			name: "Vercel(全球)",
+			url: "https://fuwari-t.vercel.app",
 		},
 		edgeone: {
-			name: "EdgeOne",
+			name: "EdgeOne(环中国线路)",
 			url: "https://edgeoneglobal.tncrr.us.kg/",
 		},
 	},

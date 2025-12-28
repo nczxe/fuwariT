@@ -5,15 +5,6 @@ import I18nKey from "../i18n/i18nKey";
 import { i18n } from "../i18n/translation";
 import { getPostUrlBySlug } from "../utils/url-utils";
 
-export let tags: string[];
-export let categories: string[];
-export let sortedPosts: Post[] = [];
-
-const params = new URLSearchParams(window.location.search);
-tags = params.has("tag") ? params.getAll("tag") : [];
-categories = params.has("category") ? params.getAll("category") : [];
-const uncategorized = params.get("uncategorized");
-
 interface Post {
 	slug: string;
 	data: {
@@ -23,6 +14,12 @@ interface Post {
 		published: Date;
 	};
 }
+
+export let sortedPosts: Post[] = [];
+
+let tags: string[] = [];
+let categories: string[] = [];
+let uncategorized = false;
 
 interface Group {
 	year: number;
@@ -41,7 +38,7 @@ function formatTag(tagList: string[]) {
 	return tagList.map((t) => `#${t}`).join(" ");
 }
 
-onMount(async () => {
+function filterPosts() {
 	let filteredPosts: Post[] = sortedPosts;
 
 	if (tags.length > 0) {
@@ -82,7 +79,19 @@ onMount(async () => {
 	groupedPostsArray.sort((a, b) => b.year - a.year);
 
 	groups = groupedPostsArray;
+}
+
+onMount(() => {
+	const params = new URLSearchParams(window.location.search);
+	tags = params.has("tag") ? params.getAll("tag") : [];
+	categories = params.has("category") ? params.getAll("category") : [];
+	uncategorized = params.has("uncategorized");
+
+	filterPosts();
 });
+
+// Initial call to filterPosts to populate groups on first load
+filterPosts();
 </script>
 
 <div class="card-base px-8 py-6">

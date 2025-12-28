@@ -1,46 +1,51 @@
 <script lang="ts">
-  import { Icon } from "astro-icon/components";
-  import { sourcesConfig } from "../config";
+import { Icon } from "astro-icon/components";
+import { sourcesConfig } from "../config";
 
-  let isOpen = false;
-  let currentSource = sourcesConfig.defaultSource;
+let isOpen = false;
+let currentSource = sourcesConfig.defaultSource;
 
-  // 从配置中获取所有源
-  const sources = Object.entries(sourcesConfig.sources);
+// 从配置中获取所有源
+const sources = Object.entries(sourcesConfig.sources);
 
-  // 切换源
-  function switchSource(sourceKey: string) {
-    const source = sourcesConfig.sources[sourceKey];
-    if (source) {
-      // 获取当前路径和查询参数
-      const currentPath = window.location.pathname;
-      const currentSearch = window.location.search;
-      
-      // 构建新的 URL
-      const newUrl = new URL(currentPath + currentSearch, source.url);
-      
-      // 跳转到新的 URL
-      window.location.href = newUrl.toString();
-    }
-    isOpen = false;
-  }
+// 切换源
+function switchSource(sourceKey: string) {
+	const source = sourcesConfig.sources[sourceKey];
+	if (source) {
+		// 获取当前路径和查询参数
+		const currentPath = window.location.pathname;
+		const currentSearch = window.location.search;
 
-  // 切换菜单的打开/关闭状态
-  function toggleMenu() {
-    isOpen = !isOpen;
-  }
+		// 构建新的 URL
+		const newUrl = new URL(currentPath + currentSearch, source.url);
 
-  // 点击外部关闭菜单
-  function handleClickOutside(event: MouseEvent) {
-    const dropdown = document.getElementById("source-switch-dropdown");
-    const button = document.getElementById("source-switch-button");
-    if (dropdown && button && !dropdown.contains(event.target as Node) && !button.contains(event.target as Node)) {
-      isOpen = false;
-    }
-  }
+		// 跳转到新的 URL
+		window.location.href = newUrl.toString();
+	}
+	isOpen = false;
+}
 
-  // 添加点击外部关闭菜单的事件监听
-  document.addEventListener("click", handleClickOutside);
+// 切换菜单的打开/关闭状态
+function toggleMenu() {
+	isOpen = !isOpen;
+}
+
+// 点击外部关闭菜单
+function handleClickOutside(event: MouseEvent) {
+	const dropdown = document.getElementById("source-switch-dropdown");
+	const button = document.getElementById("source-switch-button");
+	if (
+		dropdown &&
+		button &&
+		!dropdown.contains(event.target as Node) &&
+		!button.contains(event.target as Node)
+	) {
+		isOpen = false;
+	}
+}
+
+// 添加点击外部关闭菜单的事件监听
+document.addEventListener("click", handleClickOutside);
 </script>
 
 <div class="relative">

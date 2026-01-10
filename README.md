@@ -1,3 +1,4 @@
+# 本博客Fork自Fuwari。本仓库不是Fuwari官方仓库，本仓库是由Fuwari仓库Fork而来并进行更改。此md文件仅仅是将原仓库md文件内容翻译并修改而来，请自行辨别提供的方法的可行性
 # 🍥Fuwari  
 ![Node.js >= 20](https://img.shields.io/badge/node.js-%3E%3D20-brightgreen) 
 ![pnpm >= 9](https://img.shields.io/badge/pnpm-%3E%3D9-blue) 
@@ -25,7 +26,7 @@
 ## 🚀 快速开始
 
 1. 创建你的博客仓库：
-    - [从模板生成新仓库](https://github.com/saicaca/fuwari/generate) 或 fork 此仓库。
+    - [从模板生成新仓库](https://github.com/saicaca/fuwari/generate) 
     - 或者运行以下命令之一：
        ```sh
        npm create fuwari@latest
@@ -78,13 +79,3 @@ lang: jp      # 仅当文章语言与 `config.ts` 中的站点语言不同时设
 | `pnpm new-post <filename>` | 创建新文章                                   |
 | `pnpm astro ...`           | 运行 Astro CLI 命令，如 `astro add`、`astro check`    |
 | `pnpm astro --help`        | 获取 Astro CLI 帮助                        |
-
-## ✏️ 贡献
-
-查看 [贡献指南](https://github.com/saicaca/fuwari/blob/main/CONTRIBUTING.md) 了解如何为此项目做出贡献。
-
-## 📄 许可证
-
-本项目采用 MIT 许可证。
-
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fsaicaca%2Ffuwari.svg?type=large&issueType=license)](https://app.fossa.com/projects/git%2Bgithub.com%2Fsaicaca%2Ffuwari?ref=badge_large&issueType=license)

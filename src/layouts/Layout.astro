@@ -173,14 +173,16 @@ const bannerOffset =
 		  data-overlayscrollbars-initialize
 	>
 		<!-- Dynamic Countdown Banner -->
-		<div id="countdown-banner" class="fixed top-0 left-0 right-0 z-40 bg-[var(--card-bg)] backdrop-blur-sm border-b border-[var(--primary)]/30 shadow-md transition-all duration-300">
+		<div id="countdown-banner" class="fixed top-0 left-0 right-0 z-60 bg-white border-b border-[var(--primary)]/30 shadow-md transition-all duration-300">
 			<div class="max-w-7xl mx-auto px-4 py-2 text-center">
-				<span class="text-[var(--text-main)] font-medium mix-blend-normal"></span>
-				<span id="countdown-text" class="text-[var(--primary)] font-bold ml-2 mix-blend-normal"></span>
+				<span class="text-black font-medium"></span>
+				<span id="countdown-text" class="text-blue-600 font-bold ml-2"></span>
+				<!-- Last update time display -->
+				<span id="last-update-time" class="text-blue-600 text-sm ml-4"></span>
 			</div>
 		</div>
 		<!-- Banner Collapse Button -->
-		<button id="banner-collapse-btn" class="fixed top-1 right-4 z-50 p-1 rounded-full hover:bg-[var(--primary)]/10 transition-all duration-200 text-[var(--text-main)] bg-[var(--card-bg)] backdrop-blur-sm shadow-md">
+		<button id="banner-collapse-btn" class="fixed top-1 right-4 z-60 p-1 rounded-full hover:bg-[var(--primary)]/10 transition-all duration-200 text-black bg-white shadow-md">
 			<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
 				<path d="m6 9 6 6 6-6"/>
 			</svg>
@@ -820,16 +822,28 @@ window.onresize = () => {
 			const banner = document.getElementById('countdown-banner');
 			if (!banner) return;
 
+			// 确保横幅背景始终为纯白色
+			banner.style.backgroundColor = 'white';
+			banner.style.backgroundImage = 'none';
+
 			const titleSpan = banner.querySelector('span:first-child');
 			const countdownSpan = banner.querySelector('#countdown-text');
+			const lastUpdateSpan = banner.querySelector('#last-update-time');
 			if (titleSpan && countdownSpan) {
-				// 确保文本使用高对比度颜色
+				// 确保文本使用固定的颜色方案
 				const titleElement = titleSpan as HTMLElement;
 				const countdownElement = countdownSpan as HTMLElement;
-				titleElement.style.color = 'var(--text-main)';
-				titleElement.style.textShadow = '0 1px 2px rgba(0, 0, 0, 0.1)';
-				countdownElement.style.color = 'var(--primary)';
-				countdownElement.style.textShadow = '0 1px 2px rgba(0, 0, 0, 0.1)';
+				const lastUpdateElement = lastUpdateSpan as HTMLElement;
+				
+				// 固定颜色：普通文字黑色，时间文字蓝色
+				titleElement.style.color = 'black';
+				titleElement.style.textShadow = 'none';
+				countdownElement.style.color = 'blue-600';
+				countdownElement.style.textShadow = 'none';
+				if (lastUpdateElement) {
+					lastUpdateElement.style.color = 'blue-600';
+					lastUpdateElement.style.textShadow = 'none';
+				}
 			}
 		}
 
@@ -944,17 +958,42 @@ window.onresize = () => {
 			}
 		}
 
-		// 初始化倒计时和样式
-		updateCountdown();
+		// 初始化样式和横幅收起功能
 		addHighContrastStyle();
-		// 初始化横幅收起功能
 		initBannerCollapse();
+		// 初始化倒计时和最后更新时间显示
+		updateCountdown();
+		updateLastUpdateTime();
 		// 每秒更新一次
 		setInterval(updateCountdown, 1000);
+		// 每分钟更新一次最后更新时间
+		setInterval(updateLastUpdateTime, 60000);
 
 		// 监听主题变化，更新对比度样式
 		window.addEventListener('themechange', addHighContrastStyle);
 		window.addEventListener('huechange', addHighContrastStyle);
+
+		// 更新最后更新时间显示
+		function updateLastUpdateTime() {
+			// TODO: 修改这个时间为最后一次提交的时间
+			const lastCommitTime = new Date('2026-01-03T17:45:00'); // 请在此处修改为实际的最后一次提交时间
+			const now = new Date();
+			const diffTime = Math.abs(now.getTime() - lastCommitTime.getTime());
+			const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+			const diffHours = Math.floor((diffTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+			const diffMinutes = Math.floor((diffTime % (1000 * 60 * 60)) / (1000 * 60));
+
+			const lastUpdateElement = document.getElementById('last-update-time');
+			if (lastUpdateElement) {
+				if (diffDays > 0) {
+					lastUpdateElement.textContent = `网页距离上次更新已过去 ${diffDays} 天 ${diffHours} 小时`;
+				} else if (diffHours > 0) {
+					lastUpdateElement.textContent = `网页距离上次更新已过去 ${diffHours} 小时 ${diffMinutes} 分钟`;
+				} else {
+					lastUpdateElement.textContent = `网页距离上次更新已过去 ${diffMinutes} 分钟`;
+				}
+			}
+		}
 
 		// 测试不同日期的显示效果（用于开发测试）
 		// 示例：updateCountdown('2026-01-01'); // 测试元旦

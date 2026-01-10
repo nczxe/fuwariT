@@ -4,6 +4,7 @@ import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 
 import ConfigCarrier from "@components/ConfigCarrier.astro";
+import CookieConsent from "@components/widget/CookieConsent.svelte";
 import { profileConfig, siteConfig } from "@/config";
 import {
 	AUTO_MODE,
@@ -186,11 +187,13 @@ const bannerOffset =
 			<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
 				<path d="m6 9 6 6 6-6"/>
 			</svg>
-		</button>
+		</button></div>
 
-		<!-- Background image -->
-		<img id="background-image" class="fixed inset-0 z-0 object-cover opacity-10 pointer-events-none" />
-		
+    <!-- Background image -->
+    <img id="background-image" class="fixed inset-0 z-0 object-cover opacity-10 pointer-events-none" />
+    
+    <!-- Cookie consent banner -->
+    <CookieConsent client:only="svelte"></CookieConsent>		
 		<!-- Background control buttons wrapper -->
 		<div class="fixed bottom-4 right-4 z-50 flex flex-col items-end gap-3">
 			<!-- Refresh background button -->
@@ -297,6 +300,13 @@ const bannerOffset =
 </style>
 
 <script>
+// 扩展Window接口，添加toggleCookieConsent方法
+declare global {
+	interface Window {
+		toggleCookieConsent: () => void;
+	}
+}
+
 import 'overlayscrollbars/overlayscrollbars.css';
 import {
 	OverlayScrollbars,
@@ -304,7 +314,7 @@ import {
 	// SizeObserverPlugin,
 	// ClickScrollPlugin
 } from 'overlayscrollbars';
-import {getHue, getStoredTheme, setHue, setTheme} from "../utils/setting-utils";
+import {getHue, getStoredTheme, getBackgroundOpacity, getCardOpacity, setHue, setTheme, setBackgroundOpacity} from "../utils/setting-utils";
 import {pathsEqual, url} from "../utils/url-utils";
 import {
 	BANNER_HEIGHT,
@@ -958,9 +968,46 @@ window.onresize = () => {
 			}
 		}
 
+		// 初始化背景透明度
+		const initBackgroundOpacity = () => {
+			const opacity = getBackgroundOpacity();
+			const backgroundImage = document.getElementById("background-image");
+			if (backgroundImage) {
+				backgroundImage.style.opacity = String(opacity);
+			}
+		};
+
+		// 初始化卡片背景透明度
+		const initCardOpacity = () => {
+			const opacity = getCardOpacity();
+			const root = document.querySelector(":root") as HTMLElement;
+			if (!root) {
+				return;
+			}
+			// 获取当前主题模式
+			const isDarkMode = document.documentElement.classList.contains("dark");
+			// 设置卡片背景透明度
+			if (isDarkMode) {
+				root.style.setProperty("--card-bg", `rgba(37, 37, 42, ${opacity})`);
+			} else {
+				root.style.setProperty("--card-bg", `rgba(255, 255, 255, ${opacity})`);
+			}
+		};
+
+
+
 		// 初始化样式和横幅收起功能
 		addHighContrastStyle();
 		initBannerCollapse();
+		initBackgroundOpacity();
+		initCardOpacity();
+		
+		// 添加全局toggleCookieConsent函数，用于从顶栏按钮调用
+		window.toggleCookieConsent = function() {
+			// 触发自定义事件，通知CookieConsent组件切换显示状态
+			document.dispatchEvent(new CustomEvent('toggleCookieConsent'));
+		};
+		
 		// 初始化倒计时和最后更新时间显示
 		updateCountdown();
 		updateLastUpdateTime();

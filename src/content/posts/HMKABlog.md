@@ -1,7 +1,7 @@
 ---
 title: "如何创建一个属于自己的博客"
 description: "从零开始创建属于自己基于Fuwari的博客并部署到Cloudflare的Workers上"
-published: 2025-12-15
+published: 2026-01-11
 tags: [小白, 博客, 教程]
 category: 教程
 draft: false

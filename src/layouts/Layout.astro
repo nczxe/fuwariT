@@ -226,7 +226,7 @@ const bannerOffset =
 				</button>
 			
 			<!-- Background image URL display (hover to show) -->
-			<div id="background-image-url" class="bg-white/10 backdrop-blur-sm rounded-lg p-3 text-white text-xs max-w-xs break-all shadow-lg opacity-0 transition-opacity duration-300 hover:opacity-100 cursor-pointer group relative">
+			<div id="background-image-url" class="bg-white/10 backdrop-blur-sm rounded-lg p-3 text-white text-xs max-w-xs break-all shadow-lg opacity-0 transition-opacity duration-300 hover:opacity-100 cursor-pointer group relative hidden md:block">
 				<span class="block mb-1 font-medium">Background Image URL:</span>
 				<span id="bg-url-value" class="block group-hover:underline">Loading...</span>
 				<div class="absolute -bottom-1 left-0 right-0 h-0.5 bg-white/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -935,6 +935,18 @@ window.onresize = () => {
 				}
 			});
 
+			// 移动端检测：屏幕宽度小于768px
+			const isMobile = window.innerWidth < 768;
+			
+			// 如果是移动端，10秒后自动收起横幅
+			if (isMobile) {
+				setTimeout(() => {
+					if (!banner.classList.contains('collapsed')) {
+						collapseBanner();
+					}
+				}, 10000); // 10秒
+			}
+
 			function collapseBanner() {
 				if (banner && navbarWrapper && btn) {
 					banner.classList.add('collapsed');
@@ -1023,7 +1035,7 @@ window.onresize = () => {
 		// 更新最后更新时间显示
 		function updateLastUpdateTime() {
 			// TODO: 修改这个时间为最后一次提交的时间
-			const lastCommitTime = new Date('2026-01-11T00:00:00'); // 请在此处修改为实际的最后一次提交时间
+			const lastCommitTime = new Date('2026-02-11T03:00:00'); // 请在此处修改为实际的最后一次提交时间
 			const now = new Date();
 			const diffTime = Math.abs(now.getTime() - lastCommitTime.getTime());
 			const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));

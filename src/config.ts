@@ -57,7 +57,7 @@ export const navBarConfig: NavBarConfig = {
 };
 
 export const profileConfig: ProfileConfig = {
-	avatar: "https://tc.alcy.cc/q/20250908/ae1d123b9eae304dcdc75576155c0f54.webp", // Relative to the /src directory. Relative to the /public directory if it starts with '/'
+	avatar: "https://img.tncrr.us.kg/c/2026/02/11/260211aaaadmin.webp", // Relative to the /src directory. Relative to the /public directory if it starts with '/'
 	name: "FR-NEXT",
 	bio: "一切都只是For the next step",
 	links: [
@@ -103,7 +103,7 @@ export const sourcesConfig = {
 			url: "https://fuwari-t.vercel.app",
 		},
 		edgeone: {
-			name: "EdgeOne(环中国线路)",
+			name: "EdgeOne(全球)",
 			url: "https://edgeoneglobal.tncrr.us.kg/",
 		},
 	},

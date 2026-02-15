@@ -3,7 +3,7 @@ import { sourcesConfig } from "../../config";
 ---
 
 {sourcesConfig.enable && (
-  <div class="card-base p-4 mt-4 shadow-lg border border-[var(--primary)]/30 rounded-xl bg-[var(--card-bg)] opacity-70">
+  <div class="card-base p-4 mt-4 shadow-lg border border-[var(--primary)]/30 rounded-xl bg-[var(--card-bg)]">
     <div class="font-bold text-xl mb-3 dark:text-white transition flex items-center gap-2">
       <span class="text-[var(--primary)]">🔄</span>
       <span>切换源</span>
@@ -21,7 +21,7 @@ import { sourcesConfig } from "../../config";
           <a
             href={newUrl.toString()}
             target="_self"
-            class={`block px-4 py-3 rounded-lg transition-all duration-300 hover:bg-[var(--primary)]/20 hover:translate-x-1 hover:shadow-md ${key === sourcesConfig.defaultSource ? 'bg-[var(--primary)]/10 text-[var(--primary)] font-medium' : 'text-[var(--text-main)]'}`}
+            class={`block px-4 py-3 rounded-lg transition-all duration-300 hover:bg-[var(--primary)]/20 hover:text-[var(--primary)] hover:translate-x-1 hover:shadow-md text-neutral-700 dark:text-neutral-300 ${key === sourcesConfig.defaultSource ? 'bg-[var(--primary)]/10 text-[var(--primary)] font-medium' : ''}`}
             data-source-key={key}
             data-source-url={source.url}
           >
@@ -39,6 +39,7 @@ import { sourcesConfig } from "../../config";
       function highlightCurrentSource() {
         const currentOrigin = window.location.origin;
         const sources = document.querySelectorAll('[data-source-key]');
+        let hasMatchedSource = false;
         
         sources.forEach(source => {
           const sourceUrl = source.dataset.sourceUrl;
@@ -47,13 +48,26 @@ import { sourcesConfig } from "../../config";
           if (currentOrigin === sourceOrigin) {
             // 高亮当前源
             source.classList.add('bg-[var(--primary)]/25', 'text-[var(--primary)]', 'font-bold', 'border-l-4', 'border-[var(--primary)]', 'shadow-md');
-            source.classList.remove('text-[var(--text-main)]', 'border-l-0');
-          } else if (source.dataset.sourceKey !== '${sourcesConfig.defaultSource}') {
-            // 移除非默认源的高亮
+            source.classList.remove('text-neutral-700', 'dark:text-neutral-300', 'border-l-0');
+            hasMatchedSource = true;
+          } else {
+            // 移除所有源的高亮
             source.classList.remove('bg-[var(--primary)]/25', 'text-[var(--primary)]', 'font-bold', 'border-l-4', 'border-[var(--primary)]', 'shadow-md');
-            source.classList.add('text-[var(--text-main)]');
+            source.classList.add('text-neutral-700', 'dark:text-neutral-300');
           }
         });
+        
+        // 如果没有匹配的源，保持默认状态
+        if (!hasMatchedSource) {
+          sources.forEach(source => {
+            const key = source.dataset.sourceKey;
+            if (key === '${sourcesConfig.defaultSource}') {
+              source.classList.add('bg-[var(--primary)]/10', 'text-[var(--primary)]', 'font-medium');
+            } else {
+              source.classList.remove('bg-[var(--primary)]/10', 'text-[var(--primary)]', 'font-medium');
+            }
+          });
+        }
       }
       
       // 页面加载完成后执行
@@ -62,6 +76,9 @@ import { sourcesConfig } from "../../config";
       } else {
         highlightCurrentSource();
       }
+      
+      // 监听页面切换事件
+      window.addEventListener('popstate', highlightCurrentSource);
     </script>
   </div>
-)}
+)

@@ -173,28 +173,7 @@ const bannerOffset =
 	<body class=" min-h-screen transition " class:list={[{"lg:is-home": isHomePage, "enable-banner": enableBanner}]},
 		  data-overlayscrollbars-initialize
 	>
-		<!-- Year Progress Bar -->
-		<div class="year-progress-container w-full bg-[var(--card-bg)] border-b border-[var(--primary)]/30 py-2">
-			<div class="max-w-7xl mx-auto px-4">
-				<div class="flex items-center justify-between mb-1">
-					<span class="text-sm text-[var(--text-secondary)]">2026年进度</span>
-					<span id="year-progress-text" class="text-sm font-medium text-[var(--primary)]">0%</span>
-				</div>
-				<div class="w-full h-2 bg-[var(--line-divider)] rounded-full overflow-hidden">
-					<div id="year-progress-bar" class="h-full bg-[var(--primary)] transition-all duration-1000 ease-out" style="width: 0%"></div>
-				</div>
-			</div>
-		</div>
 
-		<!-- Countdown Banner Window -->
-		<div id="countdown-banner" class="card-base mx-4 my-4 rounded-lg shadow-md">
-			<div class="max-w-7xl mx-auto px-4 py-2 text-center">
-				<span class="text-black font-medium"></span>
-				<span id="countdown-text" class="text-blue-600 font-bold ml-2"></span>
-				<!-- Last update time display -->
-				<span id="last-update-time" class="text-blue-600 text-sm ml-4"></span>
-			</div>
-		</div>
 
     <!-- Background image -->
     <img id="background-image" class="fixed inset-0 z-0 object-cover opacity-10 pointer-events-none" />
@@ -921,28 +900,70 @@ window.onresize = () => {
 			countdownText.textContent = `${timeRemaining.days}天${timeRemaining.hours}小时${timeRemaining.minutes}分钟${timeRemaining.seconds}秒`;
 		}
 
-		// 计算和更新今年进度
-		function updateYearProgress() {
-			const now = new Date();
-			const startOfYear = new Date(now.getFullYear(), 0, 1);
-			const endOfYear = new Date(now.getFullYear(), 11, 31, 23, 59, 59);
-			const totalMilliseconds = endOfYear.getTime() - startOfYear.getTime();
-			const elapsedMilliseconds = now.getTime() - startOfYear.getTime();
-			const progressPercentage = Math.min(Math.round((elapsedMilliseconds / totalMilliseconds) * 100), 100);
+		// 横幅收起功能
+		function initBannerCollapse() {
+			const banner = document.getElementById('countdown-banner') as HTMLElement | null;
+			const btn = document.getElementById('banner-collapse-btn') as HTMLElement | null;
+			const navbarWrapper = document.getElementById('navbar-wrapper') as HTMLElement | null;
+			
+			if (!banner || !btn || !navbarWrapper) return;
 
-			const progressBar = document.getElementById('year-progress-bar');
-			const progressText = document.getElementById('year-progress-text');
-			if (progressBar && progressText) {
-				progressBar.style.width = `${progressPercentage}%`;
-				progressText.textContent = `${progressPercentage}%`;
+			// 初始状态：展开横幅
+			expandBanner();
+
+			// 点击事件
+			btn.addEventListener('click', () => {
+				const isCurrentlyCollapsed = banner.classList.contains('collapsed');
+				if (isCurrentlyCollapsed) {
+					expandBanner();
+				} else {
+					collapseBanner();
+				}
+			});
+
+			// 移动端检测：屏幕宽度小于768px
+			const isMobile = window.innerWidth < 768;
+			
+			// 如果是移动端，10秒后自动收起横幅
+			if (isMobile) {
+				setTimeout(() => {
+					if (!banner.classList.contains('collapsed')) {
+						collapseBanner();
+					}
+				}, 10000); // 10秒
 			}
-		}
 
-		// 初始化今年进度
-		function initYearProgress() {
-			updateYearProgress();
-			// 每分钟更新一次进度
-			setInterval(updateYearProgress, 60000);
+			function collapseBanner() {
+				if (banner && navbarWrapper && btn) {
+					banner.classList.add('collapsed');
+					banner.style.height = '0';
+					banner.style.padding = '0';
+					banner.style.overflow = 'hidden';
+					banner.style.opacity = '0';
+					// 移除边框
+					banner.style.borderBottom = 'none';
+					// 更新顶栏位置
+					navbarWrapper.style.top = '0';
+					// 更新按钮图标
+					btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>';
+				}
+			}
+
+			function expandBanner() {
+				if (banner && navbarWrapper && btn) {
+					banner.classList.remove('collapsed');
+					banner.style.height = 'auto';
+					banner.style.padding = '';
+					banner.style.overflow = '';
+					banner.style.opacity = '';
+					// 恢复边框
+					banner.style.borderBottom = '';
+					// 更新顶栏位置
+					navbarWrapper.style.top = '2.5rem';
+					// 更新按钮图标
+					btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>';
+				}
+			}
 		}
 
 		// 初始化背景透明度
@@ -973,9 +994,7 @@ window.onresize = () => {
 
 
 
-		// 初始化样式和今年进度
-		addHighContrastStyle();
-		initYearProgress();
+		// 初始化样式
 		initBackgroundOpacity();
 		initCardOpacity();
 		
@@ -984,47 +1003,6 @@ window.onresize = () => {
 			// 触发自定义事件，通知CookieConsent组件切换显示状态
 			document.dispatchEvent(new CustomEvent('toggleCookieConsent'));
 		};
-		
-		// 初始化倒计时和最后更新时间显示
-		updateCountdown();
-		updateLastUpdateTime();
-		// 每秒更新一次
-		setInterval(updateCountdown, 1000);
-		// 每分钟更新一次最后更新时间
-		setInterval(updateLastUpdateTime, 60000);
-
-		// 监听主题变化，更新对比度样式
-		window.addEventListener('themechange', addHighContrastStyle);
-		window.addEventListener('huechange', addHighContrastStyle);
-
-		// 更新最后更新时间显示
-		function updateLastUpdateTime() {
-			// TODO: 修改这个时间为最后一次提交的时间
-			const lastCommitTime = new Date('2026-02-15T22:00:00'); // 请在此处修改为实际的最后一次提交时间
-			const now = new Date();
-			const diffTime = Math.abs(now.getTime() - lastCommitTime.getTime());
-			const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-			const diffHours = Math.floor((diffTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-			const diffMinutes = Math.floor((diffTime % (1000 * 60 * 60)) / (1000 * 60));
-
-			const lastUpdateElement = document.getElementById('last-update-time');
-			if (lastUpdateElement) {
-				if (diffDays > 0) {
-					lastUpdateElement.textContent = `网页距离上次更新已过去 ${diffDays} 天 ${diffHours} 小时`;
-				} else if (diffHours > 0) {
-					lastUpdateElement.textContent = `网页距离上次更新已过去 ${diffHours} 小时 ${diffMinutes} 分钟`;
-				} else {
-					lastUpdateElement.textContent = `网页距离上次更新已过去 ${diffMinutes} 分钟`;
-				}
-			}
-		}
-
-		// 测试不同日期的显示效果（用于开发测试）
-		// 示例：updateCountdown('2026-01-01'); // 测试元旦
-		// 示例：updateCountdown('2026-02-17'); // 测试春节
-		// 示例：updateCountdown('2026-04-05'); // 测试清明节（节假日和节气重叠）
-		// 示例：updateCountdown('2026-02-04'); // 测试立春节气
-		// 示例：updateCountdown('2026-12-31'); // 测试年末最后一天
 
 </script>
 

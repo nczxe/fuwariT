@@ -1,0 +1,203 @@
+---
+---
+<div class="card-base p-4">
+    <div class="text-lg font-bold mb-3 text-neutral-900 dark:text-neutral-100 transition">年度进度</div>
+    <div class="mb-4">
+        <div class="flex justify-between text-sm text-neutral-600 dark:text-neutral-400 mb-1">
+            <span>已过去天数</span>
+            <span id="days-passed">计算中...</span>
+        </div>
+        <div class="flex justify-between text-sm text-neutral-600 dark:text-neutral-400 mb-2">
+            <span>总天数</span>
+            <span id="total-days">366</span>
+        </div>
+        <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5">
+            <div id="progress-bar" class="bg-[var(--primary)] h-2.5 rounded-full transition-all duration-500" style="width: 0%"></div>
+        </div>
+        <div class="flex justify-end text-sm font-medium mt-2 text-[var(--primary)]">
+            <span id="progress-percentage">0%</span>
+        </div>
+    </div>
+    
+    <div class="border-t border-gray-200 dark:border-gray-700 pt-4">
+        <div class="text-md font-semibold mb-2 text-neutral-900 dark:text-neutral-100 transition">节日倒计时</div>
+        <div id="countdown-content" class="text-sm text-neutral-700 dark:text-neutral-300">
+            <span id="countdown-title"></span>
+            <span id="countdown-text"></span>
+        </div>
+        <div class="text-xs text-neutral-600 dark:text-neutral-400 mt-2" id="last-update-time"></div>
+    </div>
+</div>
+
+<script>
+    // 节假日数据 (2026年)
+    const holidays = [
+        { date: '2026-01-01', name: '元旦', greeting: '2026新年快乐', priority: 10 },
+        { date: '2026-02-17', name: '春节', greeting: '中国农历春节快乐', priority: 10 },
+        { date: '2026-04-05', name: '清明节', greeting: '清明安康', priority: 9 },
+        { date: '2026-05-01', name: '劳动节', greeting: '劳动节快乐', priority: 9 },
+        { date: '2026-06-21', name: '端午节', greeting: '端午安康', priority: 9 },
+        { date: '2026-09-27', name: '中秋节', greeting: '中秋快乐', priority: 9 },
+        { date: '2026-10-01', name: '国庆节', greeting: '国庆快乐', priority: 10 }
+    ];
+
+    // 24节气数据 (2026年精确日期)
+    const solarTerms = [
+        { date: '2026-01-06', name: '小寒', saying: '小寒料峭，一番春意换年芳' },
+        { date: '2026-01-20', name: '大寒', saying: '大寒岁底庆团圆' },
+        { date: '2026-02-04', name: '立春', saying: '立春阳气转，大地渐回暖' },
+        { date: '2026-02-19', name: '雨水', saying: '雨水润万物，春意满人间' },
+        { date: '2026-03-05', name: '惊蛰', saying: '惊蛰春雷响，万物长生机' },
+        { date: '2026-03-20', name: '春分', saying: '春分昼夜均，花开满枝头' },
+        { date: '2026-04-05', name: '清明', saying: '清明时节雨纷纷，路上行人欲断魂' },
+        { date: '2026-04-20', name: '谷雨', saying: '谷雨生百谷，万物正逢时' },
+        { date: '2026-05-05', name: '立夏', saying: '立夏万物长，天地始交泰' },
+        { date: '2026-05-21', name: '小满', saying: '小满麦粒满，丰收在眼前' },
+        { date: '2026-06-06', name: '芒种', saying: '芒种忙种，不误农时' },
+        { date: '2026-06-21', name: '夏至', saying: '夏至日长至，阳极阴生时' },
+        { date: '2026-07-07', name: '小暑', saying: '小暑不算热，大暑三伏天' },
+        { date: '2026-07-23', name: '大暑', saying: '大暑热难当，心静自然凉' },
+        { date: '2026-08-07', name: '立秋', saying: '立秋凉风至，一叶知秋意' },
+        { date: '2026-08-23', name: '处暑', saying: '处暑天渐凉，丰收满粮仓' },
+        { date: '2026-09-07', name: '白露', saying: '白露秋分夜，一夜凉一夜' },
+        { date: '2026-09-23', name: '秋分', saying: '秋分昼夜平，平分秋色时' },
+        { date: '2026-10-08', name: '寒露', saying: '寒露惊秋晚，朝看菊渐黄' },
+        { date: '2026-10-23', name: '霜降', saying: '霜降露成霜，木叶尽脱时' },
+        { date: '2026-11-07', name: '立冬', saying: '立冬万物藏，天地始闭藏' },
+        { date: '2026-11-22', name: '小雪', saying: '小雪雪初降，天地渐苍茫' },
+        { date: '2026-12-07', name: '大雪', saying: '大雪雪纷飞，瑞雪兆丰年' },
+        { date: '2026-12-21', name: '冬至', saying: '冬至阳生，数九寒天始' }
+    ];
+
+    // 格式化日期为YYYY-MM-DD
+    function formatDate(date: Date) {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
+
+    // 检查今天是否是节假日
+    function isTodayHoliday(now: Date) {
+        const todayStr = formatDate(now);
+        return holidays.find(holiday => holiday.date === todayStr);
+    }
+
+    // 检查今天是否是节气
+    function isTodaySolarTerm(now: Date) {
+        const todayStr = formatDate(now);
+        return solarTerms.find(term => term.date === todayStr);
+    }
+
+    // 获取下一个节假日
+    function getNextHoliday(now: Date) {
+        const todayStr = formatDate(now);
+        const filteredHolidays = holidays.filter(holiday => holiday.date > todayStr);
+        if (filteredHolidays.length === 0) {
+            // 如果今年的节假日都过了，返回明年的第一个节假日
+            return { ...holidays[0], date: `${now.getFullYear() + 1}-01-01`, name: '元旦', greeting: `${now.getFullYear() + 1}新年快乐` };
+        }
+        return filteredHolidays[0];
+    }
+
+    // 计算剩余时间
+    function calculateTimeRemaining(targetDate: Date, now: Date) {
+        const timeRemaining = targetDate.getTime() - now.getTime();
+        const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
+        return { days, hours, minutes, seconds };
+    }
+
+    // 更新倒计时
+    function updateCountdown() {
+        const now = new Date();
+        const countdownTitle = document.getElementById('countdown-title');
+        const countdownText = document.getElementById('countdown-text');
+
+        if (!countdownTitle || !countdownText) return;
+
+        // 检查今天是否是节假日
+        const todayHoliday = isTodayHoliday(now);
+        if (todayHoliday) {
+            // 今天是节假日，显示祝福语
+            countdownTitle.textContent = '';
+            countdownText.textContent = todayHoliday.greeting;
+            return;
+        }
+
+        // 检查今天是否是节气
+        const todaySolarTerm = isTodaySolarTerm(now);
+        if (todaySolarTerm) {
+            // 今天是节气，显示节气名称和句子
+            countdownTitle.textContent = `${todaySolarTerm.name}：`;
+            countdownText.textContent = todaySolarTerm.saying;
+            return;
+        }
+
+        // 否则，显示下一个节假日的倒计时
+        const nextHoliday = getNextHoliday(now);
+        const targetDate = new Date(nextHoliday.date + 'T00:00:00');
+        const timeRemaining = calculateTimeRemaining(targetDate, now);
+
+        countdownTitle.textContent = `距离${nextHoliday.name}还有：`;
+        countdownText.textContent = `${timeRemaining.days}天${timeRemaining.hours}小时${timeRemaining.minutes}分钟${timeRemaining.seconds}秒`;
+    }
+
+    // 更新最后更新时间显示
+    function updateLastUpdateTime() {
+        const lastCommitTime = new Date('2026-02-11T03:00:00');
+        const now = new Date();
+        const diffTime = Math.abs(now.getTime() - lastCommitTime.getTime());
+        const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+        const diffHours = Math.floor((diffTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const diffMinutes = Math.floor((diffTime % (1000 * 60 * 60)) / (1000 * 60));
+
+        const lastUpdateElement = document.getElementById('last-update-time');
+        if (lastUpdateElement) {
+            if (diffDays > 0) {
+                lastUpdateElement.textContent = `网页距离上次更新已过去 ${diffDays} 天 ${diffHours} 小时`;
+            } else if (diffHours > 0) {
+                lastUpdateElement.textContent = `网页距离上次更新已过去 ${diffHours} 小时 ${diffMinutes} 分钟`;
+            } else {
+                lastUpdateElement.textContent = `网页距离上次更新已过去 ${diffMinutes} 分钟`;
+            }
+        }
+    }
+
+    // 计算年度进度
+    function calculateYearProgress() {
+        const now = new Date();
+        const startOfYear = new Date(now.getFullYear(), 0, 1);
+        const endOfYear = new Date(now.getFullYear(), 11, 31);
+        
+        const totalDays = Math.ceil((endOfYear.getTime() - startOfYear.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+        const daysPassed = Math.ceil((now.getTime() - startOfYear.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+        const progressPercentage = Math.min(Math.round((daysPassed / totalDays) * 100), 100);
+        
+        // 更新UI
+        const daysPassedElement = document.getElementById('days-passed');
+        const totalDaysElement = document.getElementById('total-days');
+        const progressBarElement = document.getElementById('progress-bar');
+        const progressPercentageElement = document.getElementById('progress-percentage');
+        
+        if (daysPassedElement) daysPassedElement.textContent = daysPassed.toString();
+        if (totalDaysElement) totalDaysElement.textContent = totalDays.toString();
+        if (progressBarElement) progressBarElement.style.width = `${progressPercentage}%`;
+        if (progressPercentageElement) progressPercentageElement.textContent = `${progressPercentage}%`;
+    }
+    
+    // 初始化计算
+    calculateYearProgress();
+    updateCountdown();
+    updateLastUpdateTime();
+    
+    // 每秒更新一次倒计时
+    setInterval(updateCountdown, 1000);
+    // 每分钟更新一次年度进度和最后更新时间
+    setInterval(() => {
+        calculateYearProgress();
+        updateLastUpdateTime();
+    }, 60000);
+</script>

@@ -18,41 +18,31 @@ export type CookiePreference = {
 	marketing: boolean;
 };
 
-// 从cookie中获取值
-export function getCookie(name: string): string | null {
-	const nameEQ = `${name}=`;
-	const ca = document.cookie.split(";");
-	for (let i = 0; i < ca.length; i++) {
-		let c = ca[i];
-		while (c.charAt(0) === " ") c = c.substring(1, c.length);
-		if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
-	}
-	return null;
+// 从localStorage中获取值
+export function getStorageValue(name: string): string | null {
+	return localStorage.getItem(name);
 }
 
-// 设置cookie
-export function setCookie(name: string, value: string, days = 365): void {
-	// 检查是否允许设置cookie
+// 存储值到localStorage
+export function setStorageValue(name: string, value: string): void {
+	// 检查是否允许设置偏好
 	if (!isCookieAllowed("preferences")) {
 		return;
 	}
-	const date = new Date();
-	date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
-	const expires = `expires=${date.toUTCString()}`;
-	document.cookie = `${name}=${value};${expires};path=/`;
+	localStorage.setItem(name, value);
 }
 
-// 删除cookie
-export function deleteCookie(name: string): void {
-	document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;`;
+// 从localStorage中删除值
+export function removeStorageValue(name: string): void {
+	localStorage.removeItem(name);
 }
 
 // 获取cookie偏好
 export function getCookiePreference(): CookiePreference {
-	const cookie = getCookie("cookiePreference");
-	if (cookie) {
+	const stored = localStorage.getItem("cookiePreference");
+	if (stored) {
 		try {
-			return JSON.parse(decodeURIComponent(cookie));
+			return JSON.parse(stored);
 		} catch (_e) {
 			return {
 				necessary: true,
@@ -75,25 +65,22 @@ export function setCookiePreference(
 	preference: CookiePreference,
 	isRejectAll = false,
 ): void {
-	const cookieValue = encodeURIComponent(JSON.stringify(preference));
-	const expires = new Date();
 	if (isRejectAll) {
-		// 如果拒绝所有cookie，设置一个过期的cookie
-		expires.setTime(expires.getTime() - 1);
+		// 如果拒绝所有cookie，移除存储的偏好
+		localStorage.removeItem("cookiePreference");
 	} else {
-		// 否则设置一个长期有效的cookie
-		expires.setTime(expires.getTime() + 365 * 24 * 60 * 60 * 1000);
+		// 否则存储偏好到localStorage
+		localStorage.setItem("cookiePreference", JSON.stringify(preference));
 	}
-	document.cookie = `cookiePreference=${cookieValue};expires=${expires.toUTCString()};path=/`;
 
 	// 触发自定义事件，通知其他组件cookie偏好已更改
 	document.dispatchEvent(
 		new CustomEvent("cookiePreferenceChanged", { detail: preference }),
 	);
 
-	// 如果拒绝所有cookie，清除所有非必要cookie
+	// 如果拒绝所有cookie，清除所有非必要存储
 	if (isRejectAll) {
-		clearNonNecessaryCookies();
+		clearNonNecessaryStorage();
 	}
 }
 
@@ -109,19 +96,19 @@ export function isCookieAllowed(type: keyof CookiePreference): boolean {
 
 // 检查是否已经有cookie偏好设置
 export function hasCookiePreference(): boolean {
-	return getCookie("cookiePreference") !== null;
+	return localStorage.getItem("cookiePreference") !== null;
 }
 
-// 清除所有非必要cookie
-export function clearNonNecessaryCookies(): void {
-	const cookies = document.cookie.split(";");
-	for (const cookie of cookies) {
-		const cookieName = cookie.trim().split("=")[0];
-		// 保留cookiePreference本身，用于记住用户的选择
-		if (cookieName !== "cookiePreference") {
-			deleteCookie(cookieName);
+// 清除所有非必要存储
+export function clearNonNecessaryStorage(): void {
+	const keysToKeep = ["cookiePreference", "theme", "hue"];
+	const keys = Object.keys(localStorage);
+	
+	keys.forEach(key => {
+		if (!keysToKeep.includes(key)) {
+			localStorage.removeItem(key);
 		}
-	}
+	});
 }
 
 export function getDefaultHue(): number {
@@ -193,12 +180,12 @@ export function getStoredTheme(): LIGHT_DARK_MODE {
 
 // 背景透明度相关函数
 export function getBackgroundOpacity(): number {
-	const stored = getCookie("backgroundOpacity");
+	const stored = getStorageValue("backgroundOpacity");
 	return stored ? Number.parseFloat(stored) : DEFAULT_BACKGROUND_OPACITY;
 }
 
 export function setBackgroundOpacity(opacity: number): void {
-	setCookie("backgroundOpacity", String(opacity));
+	setStorageValue("backgroundOpacity", String(opacity));
 	const backgroundImage = document.getElementById("background-image");
 	if (backgroundImage) {
 		backgroundImage.style.opacity = String(opacity);
@@ -209,12 +196,12 @@ export function setBackgroundOpacity(opacity: number): void {
 const DEFAULT_CARD_OPACITY = 0.3;
 
 export function getCardOpacity(): number {
-	const stored = getCookie("cardOpacity");
+	const stored = getStorageValue("cardOpacity");
 	return stored ? Number.parseFloat(stored) : DEFAULT_CARD_OPACITY;
 }
 
 export function setCardOpacity(opacity: number): void {
-	setCookie("cardOpacity", String(opacity));
+	setStorageValue("cardOpacity", String(opacity));
 	const root = document.querySelector(":root") as HTMLElement;
 	if (!root) {
 		return;

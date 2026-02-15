@@ -21,12 +21,10 @@ const defaultCookiePreference: CookiePreference = {
 
 // 获取当前cookie偏好
 function getCookiePreference(): CookiePreference {
-	const cookie = document.cookie
-		.split(";")
-		.find((cookie) => cookie.trim().startsWith("cookiePreference="));
-	if (cookie) {
+	const stored = localStorage.getItem("cookiePreference");
+	if (stored) {
 		try {
-			return JSON.parse(decodeURIComponent(cookie.split("=")[1]));
+			return JSON.parse(stored);
 		} catch (e) {
 			return defaultCookiePreference;
 		}
@@ -39,16 +37,13 @@ function setCookiePreference(
 	preference: CookiePreference,
 	isRejectAll = false,
 ): void {
-	const cookieValue = encodeURIComponent(JSON.stringify(preference));
-	const expires = new Date();
 	if (isRejectAll) {
-		// 如果拒绝所有cookie，设置一个过期的cookie
-		expires.setTime(expires.getTime() - 1);
+		// 如果拒绝所有cookie，移除存储的偏好
+		localStorage.removeItem("cookiePreference");
 	} else {
-		// 否则设置一个长期有效的cookie
-		expires.setTime(expires.getTime() + 365 * 24 * 60 * 60 * 1000);
+		// 否则存储偏好到localStorage
+		localStorage.setItem("cookiePreference", JSON.stringify(preference));
 	}
-	document.cookie = `cookiePreference=${cookieValue};expires=${expires.toUTCString()};path=/`;
 
 	// 触发自定义事件，通知其他组件cookie偏好已更改
 	document.dispatchEvent(
@@ -58,9 +53,7 @@ function setCookiePreference(
 
 // 检查是否已经有cookie偏好设置
 function hasCookiePreference(): boolean {
-	return document.cookie
-		.split(";")
-		.some((cookie) => cookie.trim().startsWith("cookiePreference="));
+	return localStorage.getItem("cookiePreference") !== null;
 }
 
 // 组件状态

@@ -57,7 +57,7 @@ export const navBarConfig: NavBarConfig = {
 };
 
 export const profileConfig: ProfileConfig = {
-	avatar: "../assets/images/aaa.webp", // Relative to the /src directory. Relative to the /public directory if it starts with '/'
+	avatar: "https://github.com/nczxe/fuwariT/blob/main/src/content/assets/images/aaa.webp?raw=true", // Relative to the /src directory. Relative to the /public directory if it starts with '/'
 	name: "FR-NEXT",
 	bio: "一切都只是For the next step",
 	links: [

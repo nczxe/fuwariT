@@ -173,8 +173,21 @@ const bannerOffset =
 	<body class=" min-h-screen transition " class:list={[{"lg:is-home": isHomePage, "enable-banner": enableBanner}]},
 		  data-overlayscrollbars-initialize
 	>
-		<!-- Dynamic Countdown Banner -->
-		<div id="countdown-banner" class="fixed top-0 left-0 right-0 z-60 bg-white border-b border-[var(--primary)]/30 shadow-md transition-all duration-300">
+		<!-- Year Progress Bar -->
+		<div class="year-progress-container w-full bg-[var(--card-bg)] border-b border-[var(--primary)]/30 py-2">
+			<div class="max-w-7xl mx-auto px-4">
+				<div class="flex items-center justify-between mb-1">
+					<span class="text-sm text-[var(--text-secondary)]">2026年进度</span>
+					<span id="year-progress-text" class="text-sm font-medium text-[var(--primary)]">0%</span>
+				</div>
+				<div class="w-full h-2 bg-[var(--line-divider)] rounded-full overflow-hidden">
+					<div id="year-progress-bar" class="h-full bg-[var(--primary)] transition-all duration-1000 ease-out" style="width: 0%"></div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Countdown Banner Window -->
+		<div id="countdown-banner" class="card-base mx-4 my-4 rounded-lg shadow-md">
 			<div class="max-w-7xl mx-auto px-4 py-2 text-center">
 				<span class="text-black font-medium"></span>
 				<span id="countdown-text" class="text-blue-600 font-bold ml-2"></span>
@@ -182,12 +195,6 @@ const bannerOffset =
 				<span id="last-update-time" class="text-blue-600 text-sm ml-4"></span>
 			</div>
 		</div>
-		<!-- Banner Collapse Button -->
-		<button id="banner-collapse-btn" class="fixed top-1 right-4 z-60 p-1 rounded-full hover:bg-[var(--primary)]/10 transition-all duration-200 text-black bg-white shadow-md">
-			<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-				<path d="m6 9 6 6 6-6"/>
-			</svg>
-		</button></div>
 
     <!-- Background image -->
     <img id="background-image" class="fixed inset-0 z-0 object-cover opacity-10 pointer-events-none" />
@@ -914,70 +921,28 @@ window.onresize = () => {
 			countdownText.textContent = `${timeRemaining.days}天${timeRemaining.hours}小时${timeRemaining.minutes}分钟${timeRemaining.seconds}秒`;
 		}
 
-		// 横幅收起功能
-		function initBannerCollapse() {
-			const banner = document.getElementById('countdown-banner') as HTMLElement | null;
-			const btn = document.getElementById('banner-collapse-btn') as HTMLElement | null;
-			const navbarWrapper = document.getElementById('navbar-wrapper') as HTMLElement | null;
-			
-			if (!banner || !btn || !navbarWrapper) return;
+		// 计算和更新今年进度
+		function updateYearProgress() {
+			const now = new Date();
+			const startOfYear = new Date(now.getFullYear(), 0, 1);
+			const endOfYear = new Date(now.getFullYear(), 11, 31, 23, 59, 59);
+			const totalMilliseconds = endOfYear.getTime() - startOfYear.getTime();
+			const elapsedMilliseconds = now.getTime() - startOfYear.getTime();
+			const progressPercentage = Math.min(Math.round((elapsedMilliseconds / totalMilliseconds) * 100), 100);
 
-			// 初始状态：展开横幅
-			expandBanner();
-
-			// 点击事件
-			btn.addEventListener('click', () => {
-				const isCurrentlyCollapsed = banner.classList.contains('collapsed');
-				if (isCurrentlyCollapsed) {
-					expandBanner();
-				} else {
-					collapseBanner();
-				}
-			});
-
-			// 移动端检测：屏幕宽度小于768px
-			const isMobile = window.innerWidth < 768;
-			
-			// 如果是移动端，10秒后自动收起横幅
-			if (isMobile) {
-				setTimeout(() => {
-					if (!banner.classList.contains('collapsed')) {
-						collapseBanner();
-					}
-				}, 10000); // 10秒
+			const progressBar = document.getElementById('year-progress-bar');
+			const progressText = document.getElementById('year-progress-text');
+			if (progressBar && progressText) {
+				progressBar.style.width = `${progressPercentage}%`;
+				progressText.textContent = `${progressPercentage}%`;
 			}
+		}
 
-			function collapseBanner() {
-				if (banner && navbarWrapper && btn) {
-					banner.classList.add('collapsed');
-					banner.style.height = '0';
-					banner.style.padding = '0';
-					banner.style.overflow = 'hidden';
-					banner.style.opacity = '0';
-					// 移除边框
-					banner.style.borderBottom = 'none';
-					// 更新顶栏位置
-					navbarWrapper.style.top = '0';
-					// 更新按钮图标
-					btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>';
-				}
-			}
-
-			function expandBanner() {
-				if (banner && navbarWrapper && btn) {
-					banner.classList.remove('collapsed');
-					banner.style.height = 'auto';
-					banner.style.padding = '';
-					banner.style.overflow = '';
-					banner.style.opacity = '';
-					// 恢复边框
-					banner.style.borderBottom = '';
-					// 更新顶栏位置
-					navbarWrapper.style.top = '2.5rem';
-					// 更新按钮图标
-					btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>';
-				}
-			}
+		// 初始化今年进度
+		function initYearProgress() {
+			updateYearProgress();
+			// 每分钟更新一次进度
+			setInterval(updateYearProgress, 60000);
 		}
 
 		// 初始化背景透明度
@@ -1008,9 +973,9 @@ window.onresize = () => {
 
 
 
-		// 初始化样式和横幅收起功能
+		// 初始化样式和今年进度
 		addHighContrastStyle();
-		initBannerCollapse();
+		initYearProgress();
 		initBackgroundOpacity();
 		initCardOpacity();
 		
@@ -1035,7 +1000,7 @@ window.onresize = () => {
 		// 更新最后更新时间显示
 		function updateLastUpdateTime() {
 			// TODO: 修改这个时间为最后一次提交的时间
-			const lastCommitTime = new Date('2026-02-11T03:00:00'); // 请在此处修改为实际的最后一次提交时间
+			const lastCommitTime = new Date('2026-02-15T22:00:00'); // 请在此处修改为实际的最后一次提交时间
 			const now = new Date();
 			const diffTime = Math.abs(now.getTime() - lastCommitTime.getTime());
 			const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));

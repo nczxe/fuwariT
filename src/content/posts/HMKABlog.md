@@ -134,7 +134,7 @@ fuwari/
 2. 获取一个域名
    - 免费的域名注册商 [DigitalPlat Domain](https://domain.digitalplat.org/) 部分域需要收取KYC验证费用
    - 注意：域名注册有效期为一年，但在180天内将要过期能够进行延长一年操作
-     ![DigitalPlat Domain](http://img2.tncrr.us.kg/tup/dihitalplat.png)
+     ![DigitalPlat Domain](../assets/images/1030.png)
 3. 将域名绑定到cloudflare
    - 在cloudflare登录后点按添加域按钮
    - 输入你现有的域名（是否阻止AI爬网由您决定）

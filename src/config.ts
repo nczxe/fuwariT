@@ -57,7 +57,7 @@ export const navBarConfig: NavBarConfig = {
 };
 
 export const profileConfig: ProfileConfig = {
-	avatar: "http://img2.tncrr.us.kg/2026/02/11/touxiang.webp", // Relative to the /src directory. Relative to the /public directory if it starts with '/'
+	avatar: "../assets/images/aaa.webp", // Relative to the /src directory. Relative to the /public directory if it starts with '/'
 	name: "FR-NEXT",
 	bio: "一切都只是For the next step",
 	links: [

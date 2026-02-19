@@ -5,6 +5,7 @@ import "@fontsource/roboto/700.css";
 
 import ConfigCarrier from "@components/ConfigCarrier.astro";
 import CookieConsent from "@components/widget/CookieConsent.svelte";
+import SurveyNotice from "@components/widget/SurveyNotice.svelte";
 import { profileConfig, siteConfig } from "@/config";
 import {
 	AUTO_MODE,
@@ -179,7 +180,8 @@ const bannerOffset =
     <img id="background-image" class="fixed inset-0 z-0 object-cover opacity-10 pointer-events-none" />
     
     <!-- Cookie consent banner -->
-    <CookieConsent client:only="svelte"></CookieConsent>		
+    <CookieConsent client:only="svelte"></CookieConsent>
+    <SurveyNotice client:only="svelte"></SurveyNotice>		
 		<!-- Background control buttons wrapper -->
 		<div class="fixed bottom-4 right-4 z-50 flex flex-col items-end gap-3">
 			<!-- Refresh background button -->

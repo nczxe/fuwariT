@@ -132,6 +132,68 @@ const bannerOffset =
 
 		<!-- Set the theme before the page is rendered to avoid a flash -->
 		<script is:inline define:vars={{DEFAULT_THEME, LIGHT_MODE, DARK_MODE, AUTO_MODE, BANNER_HEIGHT_EXTEND, PAGE_WIDTH, configHue}}>
+			// 域名访问警告功能
+			function checkDomain() {
+				// 获取当前域名
+				const currentDomain = window.location.hostname;
+				
+				// 本地域名列表
+				const localDomains = [
+					'localhost',
+					'127.0.0.1',
+					/^192\.168\.\d+\.\d+$/,
+					/^10\.\d+\.\d+\.\d+$/,
+					/^172\.(1[6-9]|2[0-9]|3[0-1])\.\d+\.\d+$/,
+					/^169\.254\.\d+\.\d+$/,
+					'::1'
+				];
+				
+				// 官方域名列表（及其子域）
+				const officialDomains = [
+					/^.*\.tncrr\.us\.kg$/,
+					/^.*\.fornext\.asia$/,
+					/^.*\.frnext\.qzz\.io$/
+				];
+				
+				// 检查是否为本地域名
+				for (const domain of localDomains) {
+					if (typeof domain === 'string') {
+						if (currentDomain === domain) {
+							return true;
+						}
+					} else if (domain instanceof RegExp) {
+						if (domain.test(currentDomain)) {
+							return true;
+						}
+					}
+				}
+				
+				// 检查是否为官方域名
+				for (const domain of officialDomains) {
+					if (domain.test(currentDomain)) {
+						return true;
+					}
+				}
+				
+				return false;
+			}
+			
+			// 显示域名警告
+			function showDomainWarning() {
+				if (!checkDomain()) {
+					const message = '您所访问的域名不是我们的官方网页，请确保网站安全再继续访问。点按确认将跳转到我们的官方网页，点按取消继续访问此网站';
+					const shouldRedirect = confirm(message);
+					
+					if (shouldRedirect) {
+						// 跳转到官方网页（使用主要官方域名）
+						window.location.href = 'https://tncrr.us.kg';
+					}
+				}
+			}
+			
+			// 执行域名检查
+			showDomainWarning();
+			
 			// Load the theme from local storage
 			const theme = localStorage.getItem('theme') || DEFAULT_THEME;
 			switch (theme) {

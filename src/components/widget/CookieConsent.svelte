@@ -126,11 +126,11 @@ document.addEventListener("toggleCookieConsent", () => {
 </script>
 
 {#if isVisible}
-<div class="fixed bottom-0 left-0 right-0 z-50 pointer-events-none">
+<div class="fixed bottom-4 left-4 z-50 pointer-events-none">
   <div 
-    class="max-w-[var(--page-width)] mx-auto bg-white dark:bg-gray-800 rounded-t-lg shadow-2xl p-6 transition-all duration-500 ease-in-out pointer-events-auto"
+    class="max-w-md w-full bg-white dark:bg-gray-800 rounded-lg shadow-2xl p-6 transition-all duration-500 ease-in-out pointer-events-auto"
     class:open={isOpen}
-    style:transform={isOpen ? 'translateY(0)' : 'translateY(100%)'}
+    style:transform={isOpen ? 'translate(0, 0)' : 'translate(-100%, 100%)'}
     style:opacity={isOpen ? '1' : '0'}
   >
     <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">

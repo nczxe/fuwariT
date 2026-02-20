@@ -67,6 +67,24 @@ function closeNotice() {
 	isOpen = false;
 	isVisible = false;
 }
+
+// 稍后参加调研
+function laterSurvey() {
+	// 暂时关闭弹窗，不存储状态
+	isOpen = false;
+	isVisible = false;
+}
+
+// 切换弹窗显示状态（用于从菜单中触发）
+export function toggleSurveyNotice() {
+	isVisible = true;
+	isOpen = true;
+}
+
+// 监听切换公告弹窗事件
+document.addEventListener("toggleSurveyNotice", () => {
+	toggleSurveyNotice();
+});
 </script>
 
 {#if isVisible}
@@ -103,9 +121,15 @@ function closeNotice() {
 			</button>
 			<button 
 				on:click={rejectSurvey}
-				class="w-full px-4 py-3 bg-gray-200 dark:bg-gray-700 text-neutral-800 dark:text-neutral-200 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors font-medium"
+				class="w-full px-4 py-3 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors font-medium"
 			>
 				我不愿意接受本次调研
+			</button>
+			<button 
+				on:click={laterSurvey}
+				class="w-full px-4 py-3 bg-gray-100 dark:bg-gray-800 text-neutral-600 dark:text-neutral-400 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors font-medium"
+			>
+				稍后参加调研
 			</button>
 			<button 
 				on:click={completedSurvey}

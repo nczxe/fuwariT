@@ -7,6 +7,14 @@
             <span>已过去天数</span>
             <span id="days-passed">计算中...</span>
         </div>
+        <div class="flex justify-between text-sm text-neutral-600 dark:text-neutral-400 mb-1">
+            <span>今年已经过去</span>
+            <span id="time-passed">计算中...</span>
+        </div>
+        <div class="flex justify-between text-sm text-neutral-600 dark:text-neutral-400 mb-2">
+            <span>今年还剩</span>
+            <span id="time-remaining">计算中...</span>
+        </div>
         <div class="flex justify-between text-sm text-neutral-600 dark:text-neutral-400 mb-2">
             <span>总天数</span>
             <span id="total-days">366</span>
@@ -147,7 +155,7 @@
 
     // 更新最后更新时间显示
     function updateLastUpdateTime() {
-        const lastCommitTime = new Date('2026-02-19T22:00:00');
+        const lastCommitTime = new Date('2026-02-20T16:00:00');
         const now = new Date();
         const diffTime = Math.abs(now.getTime() - lastCommitTime.getTime());
         const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
@@ -166,14 +174,30 @@
         }
     }
 
-    // 计算年度进度
+    // 计算年度进度和时间
     function calculateYearProgress() {
         const now = new Date();
         const startOfYear = new Date(now.getFullYear(), 0, 1);
-        const endOfYear = new Date(now.getFullYear(), 11, 31);
+        const endOfYear = new Date(now.getFullYear(), 11, 31, 23, 59, 59, 999);
         
+        // 计算总天数
         const totalDays = Math.ceil((endOfYear.getTime() - startOfYear.getTime()) / (1000 * 60 * 60 * 24)) + 1;
-        const daysPassed = Math.ceil((now.getTime() - startOfYear.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+        
+        // 计算已过去的时间
+        const timePassed = now.getTime() - startOfYear.getTime();
+        const daysPassed = Math.floor(timePassed / (1000 * 60 * 60 * 24));
+        const hoursPassed = Math.floor((timePassed % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutesPassed = Math.floor((timePassed % (1000 * 60 * 60)) / (1000 * 60));
+        const secondsPassed = Math.floor((timePassed % (1000 * 60)) / 1000);
+        
+        // 计算剩余的时间
+        const timeRemaining = endOfYear.getTime() - now.getTime();
+        const daysRemaining = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
+        const hoursRemaining = Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutesRemaining = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
+        const secondsRemaining = Math.floor((timeRemaining % (1000 * 60)) / 1000);
+        
+        // 计算进度百分比
         const progressPercentage = Math.min(Math.round((daysPassed / totalDays) * 100), 100);
         
         // 更新UI
@@ -181,11 +205,23 @@
         const totalDaysElement = document.getElementById('total-days');
         const progressBarElement = document.getElementById('progress-bar');
         const progressPercentageElement = document.getElementById('progress-percentage');
+        const timePassedElement = document.getElementById('time-passed');
+        const timeRemainingElement = document.getElementById('time-remaining');
         
-        if (daysPassedElement) daysPassedElement.textContent = daysPassed.toString();
+        if (daysPassedElement) daysPassedElement.textContent = (daysPassed + 1).toString();
         if (totalDaysElement) totalDaysElement.textContent = totalDays.toString();
         if (progressBarElement) progressBarElement.style.width = `${progressPercentage}%`;
         if (progressPercentageElement) progressPercentageElement.textContent = `${progressPercentage}%`;
+        
+        // 更新已过去的时间
+        if (timePassedElement) {
+            timePassedElement.textContent = `${daysPassed}天${hoursPassed}小时${minutesPassed}分${secondsPassed}秒`;
+        }
+        
+        // 更新剩余的时间
+        if (timeRemainingElement) {
+            timeRemainingElement.textContent = `${daysRemaining}天${hoursRemaining}小时${minutesRemaining}分${secondsRemaining}秒`;
+        }
     }
     
     // 初始化计算
@@ -193,11 +229,11 @@
     updateCountdown();
     updateLastUpdateTime();
     
-    // 每秒更新一次倒计时
-    setInterval(updateCountdown, 1000);
-    // 每分钟更新一次年度进度和最后更新时间
+    // 每秒更新一次倒计时和年度进度
     setInterval(() => {
+        updateCountdown();
         calculateYearProgress();
-        updateLastUpdateTime();
-    }, 60000);
+    }, 1000);
+    // 每分钟更新一次最后更新时间
+    setInterval(updateLastUpdateTime, 60000);
 </script>

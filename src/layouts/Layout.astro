@@ -150,9 +150,13 @@ const bannerOffset =
 				
 				// 官方域名列表（及其子域）
 				const officialDomains = [
+					/^tncrr\.us\.kg$/,
 					/^.*\.tncrr\.us\.kg$/,
+					/^fornext\.asia$/,
 					/^.*\.fornext\.asia$/,
-					/^.*\.frnext\.qzz\.io$/
+					/^frnext\.qzz\.io$/,
+					/^.*\.frnext\.qzz\.io$/,
+					/^fuwari-t\.vercel\.app$/
 				];
 				
 				// 检查是否为本地域名
@@ -186,7 +190,7 @@ const bannerOffset =
 					
 					if (shouldRedirect) {
 						// 跳转到官方网页（使用主要官方域名）
-						window.location.href = 'https://tncrr.us.kg';
+						window.location.href = 'https://blog.tncrr.us.kg';
 					}
 				}
 			}

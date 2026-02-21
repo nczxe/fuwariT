@@ -91,10 +91,11 @@ links.push({
 </div>
 
 <script>
-// 扩展Window接口，添加toggleSurveyNotice方法
+// 扩展Window接口，添加toggleSurveyNotice和toggleCookieConsent方法
 declare global {
 	interface Window {
 		toggleSurveyNotice: () => void;
+		toggleCookieConsent: () => void;
 	}
 }
 
@@ -135,6 +136,41 @@ function loadButtonScript() {
             }
         };
     }
+
+    // 为导航菜单中的"Cookie首选项"和"公告"链接添加点击事件处理
+    document.addEventListener('DOMContentLoaded', function() {
+        // 为桌面导航菜单链接添加点击事件
+        const navLinks = document.querySelectorAll('#navbar a');
+        navLinks.forEach(link => {
+            if (link.textContent.trim() === 'Cookie首选项') {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    window.toggleCookieConsent();
+                });
+            } else if (link.textContent.trim() === '公告') {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    window.toggleSurveyNotice();
+                });
+            }
+        });
+
+        // 为移动端导航菜单链接添加点击事件
+        const mobileNavLinks = document.querySelectorAll('#nav-menu-panel a');
+        mobileNavLinks.forEach(link => {
+            if (link.textContent.trim() === 'Cookie首选项') {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    window.toggleCookieConsent();
+                });
+            } else if (link.textContent.trim() === '公告') {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    window.toggleSurveyNotice();
+                });
+            }
+        });
+    });
 }
 
 loadButtonScript();
@@ -143,6 +179,12 @@ loadButtonScript();
 window.toggleSurveyNotice = function() {
     // 触发自定义事件，通知SurveyNotice组件切换显示状态
     document.dispatchEvent(new CustomEvent('toggleSurveyNotice'));
+};
+
+// 添加全局toggleCookieConsent函数，用于从菜单中触发cookie许可弹窗
+window.toggleCookieConsent = function() {
+    // 触发自定义事件，通知CookieConsent组件切换显示状态
+    document.dispatchEvent(new CustomEvent('toggleCookieConsent'));
 };
 </script>
 

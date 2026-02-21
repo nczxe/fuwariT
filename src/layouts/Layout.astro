@@ -248,13 +248,11 @@ const bannerOffset =
     <!-- Cookie consent banner -->
     <CookieConsent client:only="svelte"></CookieConsent>
     <SurveyNotice client:only="svelte"></SurveyNotice>		
-		<!-- Floating Action Button for background controls -->
-		<div id="fab-container" class="fixed bottom-4 right-4 z-50 cursor-move">
-			<!-- Action buttons (hidden by default) -->
-			<div id="fab-actions" class="flex flex-col items-end gap-2 mb-2 transition-all duration-300">
-				<!-- Refresh background button -->
+		<!-- Background control buttons -->
+		<div class="fixed bottom-4 right-4 z-50 flex flex-col gap-2">
+			<!-- Refresh background button -->
 				<button id="random-background-btn" 
-					class="bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-full p-3 text-white transition-all duration-300 shadow-lg hover:scale-110 active:scale-95 flex items-center gap-2 opacity-0 translate-y-4"
+					class="bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-full p-3 text-white transition-all duration-300 shadow-lg hover:scale-110 active:scale-95 flex items-center gap-2 hidden md:flex"
 					aria-label="Refresh background image"
 				>
 					<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -268,7 +266,7 @@ const bannerOffset =
 				
 				<!-- Random visit background page button -->
 				<button id="random-visit-btn" 
-					class="bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-full p-3 text-white transition-all duration-300 shadow-lg hover:scale-110 active:scale-95 flex items-center gap-2 opacity-0 translate-y-4"
+					class="bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-full p-3 text-white transition-all duration-300 shadow-lg hover:scale-110 active:scale-95 flex items-center gap-2 hidden md:flex"
 					aria-label="Random visit background page"
 				>
 					<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -280,30 +278,25 @@ const bannerOffset =
 					</svg>
 					<span class="text-sm">随机访问背景页</span>
 				</button>
-				
-				<!-- Copy background image URL button -->
-				<button id="copy-bg-url-btn" 
-					class="bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-full p-3 text-white transition-all duration-300 shadow-lg hover:scale-110 active:scale-95 flex items-center gap-2 opacity-0 translate-y-4 hidden md:flex"
-					aria-label="Copy background image URL"
-				>
-					<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-						<rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
-						<path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-					</svg>
-					<span class="text-sm">复制图片链接</span>
-				</button>
-			</div>
 			
-			<!-- Main FAB button -->
-			<button id="fab-main" 
-				class="bg-[var(--primary)] hover:bg-[var(--primary)]/90 rounded-full p-4 text-white transition-all duration-300 shadow-lg hover:scale-110 active:scale-95"
-				aria-label="Background controls"
-			>
-				<svg id="fab-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform duration-300">
-					<circle cx="12" cy="12" r="3" />
-					<path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
-				</svg>
-			</button>
+			<!-- Copy background image URL button -->
+				<div class="hidden md:block">
+					<div id="copy-bg-url-btn" 
+						class="bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-lg p-3 text-white transition-all duration-300 shadow-lg hover:scale-105 active:scale-95 cursor-pointer mb-2 max-w-[250px]"
+						aria-label="Copy background image URL"
+					>
+						<div class="flex items-center gap-2 mb-1">
+							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+								<rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+								<path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+							</svg>
+							<span class="text-sm">背景图片链接</span>
+						</div>
+						<div class="text-xs ml-6">
+							<span id="current-bg-url" class="block truncate">加载中...</span>
+						</div>
+					</div>
+				</div>
 		</div>
 		
 		<!-- Copy success notification -->
@@ -716,20 +709,46 @@ window.onresize = () => {
 		};
 		
 		// 获取实际的重定向URL
-		const getActualImageUrl = async (shortUrl: string): Promise<string> => {
-			try {
-				const response = await fetch(shortUrl, {
-					method: 'HEAD',
-					redirect: 'follow',
-					mode: 'cors'
+			const getActualImageUrl = async (shortUrl: string): Promise<string> => {
+				return new Promise((resolve) => {
+					try {
+						// 使用XMLHttpRequest获取实际URL，更可靠地处理重定向
+						const xhr = new XMLHttpRequest();
+						xhr.open('GET', shortUrl, true);
+						// XMLHttpRequest默认会跟随重定向，不需要设置followRedirects
+						
+						xhr.onload = function() {
+							// 如果请求成功，使用最终的URL
+							if (xhr.status >= 200 && xhr.status < 300) {
+								resolve(xhr.responseURL);
+							} else {
+								// 如果请求失败，使用原始URL
+								console.error('HTTP error:', xhr.status);
+								resolve(shortUrl);
+							}
+						};
+						
+						xhr.onerror = function() {
+							// 如果发生错误，使用原始URL
+							console.error('Network error');
+							resolve(shortUrl);
+						};
+						
+						// 设置超时
+						xhr.timeout = 5000;
+						xhr.ontimeout = function() {
+							console.error('Request timeout');
+							resolve(shortUrl);
+						};
+						
+						xhr.send();
+					} catch (error) {
+						console.error('Error getting actual image URL:', error);
+						// 如果获取失败，使用原始URL
+						resolve(shortUrl);
+					}
 				});
-				return response.url;
-			} catch (error) {
-				console.error('Error getting actual image URL:', error);
-				// 如果获取失败，使用原始URL
-				return shortUrl;
-			}
-		};
+			};
 		
 		// 设置背景图片
 		const setBackgroundImage = async () => {
@@ -744,7 +763,8 @@ window.onresize = () => {
 			// Set the background image
 			const backgroundImage = document.getElementById('background-image') as HTMLImageElement;
 			if (backgroundImage) {
-				backgroundImage.src = randomUrl;
+				// 使用实际的图片URL作为src
+				backgroundImage.src = actualImageUrl;
 				// 存储实际的图片URL到元素的dataset中
 				backgroundImage.dataset.actualUrl = actualImageUrl;
 				// 直接设置不透明度为90%
@@ -754,6 +774,12 @@ window.onresize = () => {
 				const bgUrlValue = document.getElementById('bg-url-value');
 				if (bgUrlValue) {
 					bgUrlValue.textContent = actualImageUrl;
+				}
+				
+				// 更新复制链接按钮下方显示的当前链接
+				const currentBgUrl = document.getElementById('current-bg-url');
+				if (currentBgUrl) {
+					currentBgUrl.textContent = actualImageUrl;
 				}
 			}
 		};
@@ -820,15 +846,44 @@ window.onresize = () => {
 			const backgroundImageUrl = document.getElementById('background-image-url');
 			if (backgroundImageUrl) {
 				backgroundImageUrl.addEventListener('click', async () => {
-					const backgroundImage = document.getElementById('background-image');
-					if (!backgroundImage || !backgroundImage.dataset.actualUrl) {
-						console.error('Background image URL not found');
+					const backgroundImage = document.getElementById('background-image') as HTMLImageElement;
+					if (!backgroundImage) {
+						console.error('Background image element not found');
 						return;
 					}
 					
+					// 获取当前正在使用的图片URL
+					const imageUrl = backgroundImage.dataset.actualUrl || backgroundImage.src;
+					
 					try {
 						// 复制URL到剪贴板
-						await navigator.clipboard.writeText(backgroundImage.dataset.actualUrl);
+						await navigator.clipboard.writeText(imageUrl);
+						
+						// 显示复制成功提示
+						showCopyNotification();
+					} catch (error) {
+						console.error('Error copying URL:', error);
+						alert('复制链接失败，请稍后重试');
+					}
+				});
+			}
+			
+			// 为复制图片链接按钮添加事件
+			const copyBgUrlBtn = document.getElementById('copy-bg-url-btn');
+			if (copyBgUrlBtn) {
+				copyBgUrlBtn.addEventListener('click', async () => {
+					const backgroundImage = document.getElementById('background-image') as HTMLImageElement;
+					if (!backgroundImage) {
+						console.error('Background image element not found');
+						return;
+					}
+					
+					// 获取当前正在使用的图片URL
+					const imageUrl = backgroundImage.dataset.actualUrl || backgroundImage.src;
+					
+					try {
+						// 复制URL到剪贴板
+						await navigator.clipboard.writeText(imageUrl);
 						
 						// 显示复制成功提示
 						showCopyNotification();
@@ -839,142 +894,7 @@ window.onresize = () => {
 				});
 			}
 
-			// 初始化FAB功能
-			function initFAB() {
-				const fabContainer = document.getElementById('fab-container');
-				const fabMain = document.getElementById('fab-main');
-				const fabActions = document.getElementById('fab-actions');
-				const fabIcon = document.getElementById('fab-icon');
-				
-				// 空值检查
-				if (!fabContainer || !fabMain || !fabActions || !fabIcon) {
-					return;
-				}
-				
-				const actionButtons = fabActions.querySelectorAll('button');
-				
-				let isExpanded = false;
-				let isDragging = false;
-				let startX: number = 0;
-				let startY: number = 0;
-				let offsetX: number = 0;
-				let offsetY: number = 0;
-				
-				// 切换FAB展开/收起状态
-				fabMain.addEventListener('click', function (e) {
-					e.stopPropagation();
-					isExpanded = !isExpanded;
-					
-					// 切换主按钮图标
-					fabIcon.style.transform = isExpanded ? 'rotate(45deg)' : 'rotate(0deg)';
-					
-					// 显示/隐藏操作按钮
-					actionButtons.forEach((btn, index) => {
-						setTimeout(() => {
-							if (isExpanded) {
-								btn.style.opacity = '1';
-								btn.style.transform = 'translateY(0)';
-							} else {
-								btn.style.opacity = '0';
-								btn.style.transform = 'translateY(10px)';
-							}
-						}, index * 50);
-					});
-				});
-				
-				// 点击页面其他地方收起FAB
-				document.addEventListener('click', function () {
-					if (isExpanded) {
-						isExpanded = false;
-						fabIcon.style.transform = 'rotate(0deg)';
-						actionButtons.forEach(btn => {
-							btn.style.opacity = '0';
-							btn.style.transform = 'translateY(10px)';
-						});
-					}
-				});
-				
-				// 阻止FAB内部点击事件冒泡
-				fabActions.addEventListener('click', function (e) {
-					e.stopPropagation();
-				});
-				
-				// 实现FAB移动功能
-				fabContainer.addEventListener('mousedown', function (e) {
-					const target = e.target as Node;
-					if (e.target === fabMain || fabMain.contains(target)) {
-						return; // 点击主按钮时不移动
-					}
-					
-					isDragging = true;
-					startX = e.clientX;
-					startY = e.clientY;
-					
-					// 获取FAB当前位置
-					const rect = fabContainer.getBoundingClientRect();
-					offsetX = rect.left;
-					offsetY = rect.top;
-					
-					fabContainer.style.cursor = 'grabbing';
-				});
-				
-				document.addEventListener('mousemove', function (e) {
-					if (isDragging) {
-						const dx = e.clientX - startX;
-						const dy = e.clientY - startY;
-						
-						// 计算新位置
-						let newX = offsetX + dx;
-						let newY = offsetY + dy;
-						
-						// 限制在视口内
-						const fabWidth = fabContainer.offsetWidth;
-						const fabHeight = fabContainer.offsetHeight;
-						const viewportWidth = window.innerWidth;
-						const viewportHeight = window.innerHeight;
-						
-						newX = Math.max(0, Math.min(newX, viewportWidth - fabWidth));
-						newY = Math.max(0, Math.min(newY, viewportHeight - fabHeight));
-						
-						// 更新位置
-						fabContainer.style.left = `${newX}px`;
-						fabContainer.style.top = `${newY}px`;
-						fabContainer.style.bottom = 'auto';
-						fabContainer.style.right = 'auto';
-					}
-				});
-				
-				document.addEventListener('mouseup', function () {
-					isDragging = false;
-					fabContainer.style.cursor = 'move';
-				});
-				
-				// 为复制图片链接按钮添加事件
-				const copyBgUrlBtn = document.getElementById('copy-bg-url-btn');
-				if (copyBgUrlBtn) {
-					copyBgUrlBtn.addEventListener('click', async () => {
-						const backgroundImage = document.getElementById('background-image');
-						if (!backgroundImage || !backgroundImage.dataset.actualUrl) {
-							console.error('Background image URL not found');
-							return;
-						}
-						
-						try {
-							// 复制URL到剪贴板
-							await navigator.clipboard.writeText(backgroundImage.dataset.actualUrl);
-							
-							// 显示复制成功提示
-							showCopyNotification();
-						} catch (error) {
-							console.error('Error copying URL:', error);
-							alert('复制链接失败，请稍后重试');
-						}
-					});
-				}
-			}
-			
-			// 初始化FAB
-			initFAB();
+
 
 		});
 

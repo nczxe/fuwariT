@@ -8,8 +8,8 @@ import type {
 import { LinkPreset } from "./types/config";
 
 export const siteConfig: SiteConfig = {
-	title: "FR-NEXT_Fuwari",
-	subtitle: "基于 Fuwari 的博客",
+	title: "FR-NEXT",
+	subtitle: "一个基于Fuwari模板搭建的博客",
 	lang: "zh_CN", // Language code, e.g. 'en', 'zh_CN', 'ja', etc.
 	themeColor: {
 		hue: 250, // Default hue for the theme color, from 0 to 360. e.g. red: 0, teal: 200, cyan: 250, pink: 345
@@ -57,9 +57,10 @@ export const navBarConfig: NavBarConfig = {
 };
 
 export const profileConfig: ProfileConfig = {
-	avatar: "https://github.com/nczxe/fuwariT/blob/main/src/content/assets/images/aaa.webp?raw=true", // Relative to the /src directory. Relative to the /public directory if it starts with '/'
+	avatar:
+		"https://github.com/nczxe/fuwariT/blob/main/src/content/assets/images/aaa.webp?raw=true", // Relative to the /src directory. Relative to the /public directory if it starts with '/'
 	name: "FR-NEXT",
-	bio: "一切都只是For the next step",
+	bio: "有未来才有共存可说，不一定牵着手，但一定永远向前走",
 	links: [
 		{
 			name: "Bilibili",

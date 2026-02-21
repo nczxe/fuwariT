@@ -127,8 +127,51 @@ document.addEventListener("toggleCookieConsent", () => {
 
 {#if isVisible}
 <div class="fixed bottom-4 left-4 z-50 pointer-events-none">
+  <!-- 移动端简化版本 -->
   <div 
-    class="max-w-md w-full bg-white dark:bg-gray-800 rounded-lg shadow-2xl p-6 transition-all duration-500 ease-in-out pointer-events-auto"
+    class="max-w-xs w-full bg-white dark:bg-gray-800 rounded-lg shadow-2xl p-4 md:hidden transition-all duration-500 ease-in-out pointer-events-auto"
+    class:open={isOpen}
+    style:transform={isOpen ? 'translate(0, 0)' : 'translate(-100%, 100%)'}
+    style:opacity={isOpen ? '1' : '0'}
+  >
+    <div class="flex flex-col gap-4">
+      <div>
+        <h3 class="text-lg font-bold mb-2 flex items-center gap-2">
+          <Icon icon="fa6-solid:cookie" class="text-[var(--primary)]" />
+          Cookie 许可
+        </h3>
+        <p class="text-sm">
+          我们使用cookie来提升您的浏览体验。
+        </p>
+      </div>
+      
+      <!-- 移动端简化操作按钮 -->
+      <div class="flex flex-col gap-2">
+        <button 
+          on:click={rejectAll}
+          class="w-full px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-md hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+        >
+          拒绝
+        </button>
+        <button 
+          on:click={acceptNecessary}
+          class="w-full px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-md hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+        >
+          仅必要
+        </button>
+        <button 
+          on:click={acceptAll}
+          class="w-full px-4 py-2 bg-[var(--primary)] text-white rounded-md hover:bg-[var(--primary)]/90 transition-colors"
+        >
+          全部接受
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- 桌面端完整版本 -->
+  <div 
+    class="max-w-md w-full bg-white dark:bg-gray-800 rounded-lg shadow-2xl p-6 hidden md:block transition-all duration-500 ease-in-out pointer-events-auto"
     class:open={isOpen}
     style:transform={isOpen ? 'translate(0, 0)' : 'translate(-100%, 100%)'}
     style:opacity={isOpen ? '1' : '0'}

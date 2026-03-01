@@ -60,7 +60,7 @@ export const profileConfig: ProfileConfig = {
 	avatar:
 		"https://github.com/nczxe/fuwariT/blob/main/src/content/assets/images/aaa.webp?raw=true", // Relative to the /src directory. Relative to the /public directory if it starts with '/'
 	name: "FR-NEXT",
-	bio: "有未来才有共存可说，不一定牵着手，但一定永远向前走",
+	bio: "有共存才有未来可说，不一定牵着手，但一定永远向前走",
 	links: [
 		{
 			name: "Bilibili",

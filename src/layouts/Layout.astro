@@ -122,6 +122,9 @@ const bannerOffset =
 
 		<meta name="viewport" content="width=device-width" />
 		<meta name="generator" content={Astro.generator} />
+		
+		<!-- Canonical link to avoid duplicate content issues -->
+		<link rel="canonical" href={`https://blog.tncrr.us.kg${Astro.url.pathname}${Astro.url.search}`} />
 		{favicons.map(favicon => (
 			<link rel="icon"
 				  href={favicon.src.startsWith('/') ? url(favicon.src) : favicon.src}

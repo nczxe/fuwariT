@@ -32,7 +32,7 @@ export const vi: Translation = {
 
 	[Key.more]: "Thêm",
 
-	[Key.author]: "Tác giả",
+	[Key.author]: "Với thiệu",
 	[Key.publishedAt]: "Đăng vào lúc",
 	[Key.license]: "Giấy phép bản quyền",
 };

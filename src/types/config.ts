@@ -95,6 +95,10 @@ export type BlogPostData = {
 	prevSlug?: string;
 	nextTitle?: string;
 	nextSlug?: string;
+	license?: {
+		name: string;
+		url: string;
+	};
 };
 
 export type ExpressiveCodeConfig = {

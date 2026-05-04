@@ -22,7 +22,7 @@ function setSurveyStatus(status: SurveyStatus): void {
 }
 
 // 组件状态
-let isVisible = getSurveyStatus() === null;
+let isVisible = false;
 let isOpen = false;
 
 // 延迟显示弹窗，实现平滑弹出效果

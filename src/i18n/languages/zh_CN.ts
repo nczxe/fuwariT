@@ -32,7 +32,7 @@ export const zh_CN: Translation = {
 
 	[Key.more]: "更多",
 
-	[Key.author]: "作者",
+	[Key.author]: "关于",
 	[Key.publishedAt]: "发布于",
 	[Key.license]: "许可协议",
 };

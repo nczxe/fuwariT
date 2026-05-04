@@ -1,5 +1,9 @@
 # 关于
 
+## 关于作者
+
+我是FR-NEXT，一名高二学生，喜欢探索新的先进的技术，博客只是一个个人爱好，所以更新可能较慢甚至完全不更新
+
 ## 网站概述&版权信息
 
 本网站是一个基于Fuwari框架构建的静态网站，开源于GitHub。采用 [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) 许可

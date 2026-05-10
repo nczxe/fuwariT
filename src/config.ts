@@ -16,13 +16,13 @@ export const siteConfig: SiteConfig = {
 		fixed: false, // Hide the theme color picker for visitors
 	},
 	banner: {
-		enable: false,
-		src: "assets/images/demo-banner.png", // Relative to the /src directory. Relative to the /public directory if it starts with '/'
+		enable: true,
+		src: "/mdx.png", // Relative to the /src directory. Relative to the /public directory if it starts with '/'
 		position: "center", // Equivalent to object-position, only supports 'top', 'center', 'bottom'. 'center' by default
 		credit: {
-			enable: false, // Display the credit text of the banner image
-			text: "", // Credit text to be displayed
-			url: "", // (Optional) URL link to the original artwork or artist's page
+			enable: true, // Display the credit text of the banner image
+			text: "邂逅（KaikouOwO）/花店的主人：迷迭香", // Credit text to be displayed
+			url: "https://www.pixiv.net/artworks/127511604", // (Optional) URL link to the original artwork or artist's page
 		},
 	},
 	toc: {
@@ -57,10 +57,11 @@ export const navBarConfig: NavBarConfig = {
 };
 
 export const profileConfig: ProfileConfig = {
-	avatar:
-		"https://github.com/nczxe/fuwariT/blob/main/src/content/assets/images/aaa.webp?raw=true", // Relative to the /src directory. Relative to the /public directory if it starts with '/'
+	avatar: "https://i.postimg.cc/tRYzpxkD/touxiang.webp", // Primary avatar URL
+	avatarFallback:
+		"https://github.com/nczxe/fuwariT/blob/main/src/content/assets/images/aaa.webp?raw=true", // Fallback avatar URL if primary fails
 	name: "FR-NEXT",
-	bio: "有共存才有未来可说，不一定牵着手，但一定永远向前走",
+	bio: "无限路程，无限进步",
 	links: [
 		{
 			name: "Bilibili",
@@ -71,6 +72,21 @@ export const profileConfig: ProfileConfig = {
 			name: "GitHub",
 			icon: "fa6-brands:github",
 			url: "https://github.com/nczxe/fuwariT",
+		},
+		{
+			name: "抖音",
+			icon: "fa6-brands:tiktok",
+			url: "https://www.douyin.com/user/MS4wLjABAAAAc8sN81Z7YF9GVxG-i1AOAeulrhV2J7lqvNVQowtrNw-OAd_FxbDUHghxkvH9GlYF?from_tab_name=main",
+		},
+		{
+			name: "X",
+			icon: "fa6-brands:twitter",
+			url: "https://x.com/TNCRR_FR_NEXT",
+		},
+		{
+			name: "YouTube",
+			icon: "fa6-brands:youtube",
+			url: "https://www.youtube.com/@FR-NEXT",
 		},
 	],
 };

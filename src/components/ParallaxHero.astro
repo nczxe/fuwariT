@@ -1,0 +1,83 @@
+---
+interface Props {
+	parallaxImage?: string;
+	backgroundImage?: string;
+}
+
+const { parallaxImage = "/mdx.png", backgroundImage = "/mdx.png" } =
+	Astro.props;
+---
+
+<div class="relative w-full h-[50vh] overflow-hidden parallax-container">
+    <!-- 背景层 - 固定不动 -->
+    <div class="absolute inset-0 parallax-background">
+        <img 
+            src={backgroundImage} 
+            alt="Background" 
+            class="w-full h-full object-cover opacity-30"
+        />
+    </div>
+    
+    <!-- 前景层 - 随滚动移动 -->
+    <div class="absolute inset-0 flex items-center justify-center parallax-foreground">
+        <div class="relative">
+            <img 
+                src={parallaxImage} 
+                alt="Parallax" 
+                class="max-w-[400px] max-h-[300px] w-full h-auto object-contain drop-shadow-2xl"
+            />
+            <!-- 版权信息 -->
+            <div class="absolute bottom-2 right-2">
+                <a 
+                    href="https://www.pixiv.net/artworks/127511604" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    class="text-xs text-white/80 bg-black/50 px-2 py-1 rounded hover:bg-black/70 hover:text-white transition-colors"
+                >
+                    邂逅（KaikouOwO）/花店的主人：迷迭香
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.parallax-container {
+    perspective: 1000px;
+}
+
+.parallax-background {
+    position: fixed;
+    z-index: -1;
+}
+
+.parallax-foreground {
+    z-index: 1;
+    transform-style: preserve-3d;
+}
+
+.parallax-foreground img {
+    transform: translateZ(50px);
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const foreground = document.querySelector<HTMLElement>('.parallax-foreground');
+    let ticking = false;
+    
+    window.addEventListener('scroll', () => {
+        if (!ticking) {
+            requestAnimationFrame(() => {
+                if (foreground) {
+                    const scrollY = window.scrollY;
+                    const parallaxOffset = scrollY * 0.3;
+                    foreground.style.transform = `translateY(${parallaxOffset}px)`;
+                }
+                ticking = false;
+            });
+            ticking = true;
+        }
+    });
+});
+</script>

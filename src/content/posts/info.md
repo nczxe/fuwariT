@@ -4,7 +4,7 @@ description: "这里是用于简单传输的文件"
 published: 2025-10-08
 tags: [视频, 文字, 代理]
 category: 示例
-draft: false
+draft: true
 ---
 
 ### 这里是用于文本内容传输的INFO界面

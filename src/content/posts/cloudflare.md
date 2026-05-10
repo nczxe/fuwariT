@@ -2,6 +2,7 @@
 title: "深入解析 Cloudflare WARP+：不仅是加密，更是加速"
 description: "详细介绍 Cloudflare WARP+ 的技术原理、性能优势、使用场景及高级配置方案"
 published: 2025-09-30
+updated: 2026-05-10
 tags: [WARP+, 工具, 代理]
 category: 工具
 draft: false
@@ -77,6 +78,15 @@ WARP+ 是 Cloudflare 1.1.1.1 应用中的高级网络加速服务，基于 WireG
 ## 解锁WARP+新协议
 
 ::github{repo="nczxe/clou"}
+
+## Zero Trust
+
+在近期cloudflare更新了Warp，原WARP登录团队账户虽然仍可以继续使用，但建议尽早迁移到Zero Trust以避免网络中断。
+
+:::tips
+仅在移动端，PC用户仍可以继续使用，无需更改。
+:::
+
 
 ## 🧾 总结
 
